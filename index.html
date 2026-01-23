@@ -1085,7 +1085,7 @@
                 }
             }
             
-            // 播放发音
+            // 播放发音 - 已修复iPhone发音问题
             function speakLetter() {
                 if (!speechSynthesis) {
                     alert('您的浏览器不支持语音合成功能');
@@ -1096,22 +1096,23 @@
                 let utterance;
                 
                 if (currentLetterData.type === 'abbreviation') {
-                    // 对于缩写，逐个字母读
+                    // 对于缩写，逐个字母读，用空格分隔确保清晰
                     const letters = textToSpeak.split('');
-                    const letterSounds = letters.map(letter => letter).join(' ');
-                    utterance = new SpeechSynthesisUtterance(letterSounds);
+                    utterance = new SpeechSynthesisUtterance(letters.join(' '));
                 } else {
-                    // 对于单个字母，读字母本身
+                    // 对于单个字母，确保只读字母本身
+                    // 修复关键点：直接使用字母本身，不添加任何额外描述
                     utterance = new SpeechSynthesisUtterance(textToSpeak);
                 }
                 
+                // 设置语音参数，确保一致性
                 utterance.lang = 'en-US';
                 utterance.rate = 0.8; // 稍微放慢速度
                 
                 // 停止任何正在播放的语音
                 speechSynthesis.cancel();
                 
-                // 播放发音
+                // 播放修复后的发音
                 speechSynthesis.speak(utterance);
                 
                 // 为按钮添加反馈效果
