@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英语字母语音认读系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 2rem;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.4;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .letter-display-section {
+            flex: 1;
+            min-width: 300px;
+            max-width: 600px;
+        }
+        
+        .letter-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px 15px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .letter-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .letter-display {
+            font-size: 18rem;
+            font-weight: 900;
+            line-height: 1;
+            margin: 15px 0;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            min-height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .letter-display.abbreviation {
+            font-size: 7rem;
+            letter-spacing: 6px;
+        }
+        
+        .uppercase {
+            color: #3498db;
+        }
+        
+        .lowercase {
+            color: #e74c3c;
+        }
+        
+        .challenge-color {
+            color: #9b59b6;
+            background: linear-gradient(to right, #9b59b6, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .letter-info {
+            font-size: 1.5rem;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        
+        .abbreviation-meaning {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #e8f4fc;
+            border-radius: 8px;
+            color: #2980b9;
+            font-style: italic;
+            display: inline-block;
+            border-left: 4px solid #3498db;
+        }
+        
+        .controls-section {
+            flex: 1;
+            min-width: 280px;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .controls-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px 20px;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 18px 15px;
+            margin: 12px 0;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, #2980b9, #2573a7);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.5);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(to right, #f39c12, #e67e22);
+            color: white;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+        }
+        
+        .btn-warning:hover {
+            background: linear-gradient(to right, #e67e22, #d35400);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(243, 156, 18, 0.5);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(to right, #27ae60, #219955);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.5);
+        }
+        
+        .btn-challenge {
+            background: linear-gradient(to right, #9b59b6, #8e44ad);
+            color: white;
+            box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+            position: relative;
+        }
+        
+        .btn-challenge:hover {
+            background: linear-gradient(to right, #8e44ad, #7d3c98);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(155, 89, 182, 0.5);
+        }
+        
+        .difficulty-tag {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background-color: #f1c40f;
+            color: #2c3e50;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        
+        .mode-controls {
+            margin-top: 15px;
+        }
+        
+        .mode-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 30px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #3498db;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+        
+        .toggle-switch.challenge input:checked + .toggle-slider {
+            background-color: #9b59b6;
+        }
+        
+        .voice-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .voice-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-speak {
+            background: linear-gradient(to right, #1abc9c, #16a085);
+            color: white;
+        }
+        
+        .btn-speak:hover {
+            background: linear-gradient(to right, #16a085, #138d75);
+            transform: translateY(-2px);
+        }
+        
+        .stats-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .stats-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            margin-top: 4px;
+        }
+        
+        /* 认读模式特定样式 */
+        .recognition-result {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+        
+        .recognition-active {
+            display: block;
+        }
+        
+        .result-status {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            animation: fadeInOut 2.5s ease-in-out;
+        }
+        
+        .result-correct {
+            background-color: #d5f4e6;
+            color: #27ae60;
+            border: 3px solid #2ecc71;
+        }
+        
+        .result-incorrect {
+            background-color: #fadbd8;
+            color: #e74c3c;
+            border: 3px solid #e74c3c;
+        }
+        
+        .result-waiting {
+            background-color: #fef9e7;
+            color: #f39c12;
+            border: 3px solid #f39c12;
+        }
+        
+        .result-text {
+            font-size: 1.3rem;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+        
+        .recording-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 15px 0;
+        }
+        
+        .recording-dot {
+            width: 18px;
+            height: 18px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.8); opacity: 0.7; }
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(10px); }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+        
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #7f8c8d;
+            padding: 15px;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        
+        .history-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 1100px;
+            margin-top: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        
+        .history-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .history-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            max-height: 120px;
+            overflow-y: auto;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .history-letter {
+            font-size: 2rem;
+            font-weight: bold;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+        
+        .history-abbreviation {
+            font-size: 1.5rem;
+            width: auto;
+            padding: 0 12px;
+        }
+        
+        .uppercase-history {
+            background-color: #e1f5fe;
+            color: #0288d1;
+        }
+        
+        .lowercase-history {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        
+        .abbreviation-history {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .letter-display {
+                font-size: 12rem;
+                min-height: 180px;
+            }
+            
+            .letter-display.abbreviation {
+                font-size: 5rem;
+                letter-spacing: 4px;
+            }
+            
+            .btn {
+                padding: 15px;
+                font-size: 1.2rem;
+            }
+            
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .letter-display-section, .controls-section {
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            .letter-display {
+                font-size: 10rem;
+                min-height: 150px;
+            }
+            
+            .letter-display.abbreviation {
+                font-size: 4rem;
+                letter-spacing: 3px;
+            }
+            
+            .btn {
+                padding: 12px;
+                font-size: 1.1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+        
+        .challenge-hint {
+            font-size: 1.1rem;
+            margin-top: 12px;
+            color: #7b1fa2;
+            font-style: italic;
+        }
+        
+        .quick-feedback {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeInOut 2.5s ease-in-out;
+            display: none;
+        }
+        
+        .feedback-correct {
+            background-color: #d5f4e6;
+            color: #27ae60;
+            border: 3px solid #2ecc71;
+        }
+        
+        .feedback-incorrect {
+            background-color: #fadbd8;
+            color: #e74c3c;
+            border: 3px solid #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-volume-up"></i> 英语字母语音认读系统</h1>
+            <p class="subtitle">随机抽取英文字母或常见缩写，帮助学生认读字母。开启认读模式进行发音练习，开启挑战模式认读英文缩写。</p>
+        </header>
+        
+        <div class="main-content">
+            <section class="letter-display-section">
+                <div class="letter-card">
+                    <div class="letter-display uppercase" id="currentLetter">A</div>
+                    
+                    <div class="letter-info" id="letterInfo">大写字母 A</div>
+                    
+                    <div class="abbreviation-meaning" id="abbreviationMeaning" style="display: none;">
+                        含义：<span id="meaningText">联合国</span>
+                    </div>
+                    <div class="challenge-hint" id="challengeHint" style="display: none;">
+                        💡 提示：请逐个字母读出来，比如 "U-N" 读作 "U, N"
+                    </div>
+                    
+                    <div class="voice-controls">
+                        <button class="voice-btn btn-speak" id="speakLetterBtn">
+                            <i class="fas fa-volume-up"></i> 播放发音
+                        </button>
+                    </div>
+                    
+                    <!-- 认读模式下的抽签按钮 -->
+                    <div class="recognition-controls" id="recognitionControls" style="display: none; margin-top: 15px;">
+                        <button class="btn btn-primary" id="recognitionDrawButton">
+                            <i class="fas fa-random"></i> 抽取新字母
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 认读模式结果显示区域 -->
+                <div class="recognition-result" id="recognitionResult">
+                    <div class="result-status result-waiting" id="resultStatus">
+                        准备开始认读
+                    </div>
+                    <div class="result-text" id="resultText">
+                        请点击"开始认读"按钮，然后大声读出屏幕上显示的字母。
+                    </div>
+                    
+                    <div class="recording-indicator" id="recordingIndicator" style="display: none;">
+                        <div class="recording-dot"></div>
+                        <div style="font-size: 1.1rem; font-weight: bold; color: #e74c3c;">
+                            正在聆听您的发音...
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-warning" id="startRecognitionBtn" style="width: 100%;">
+                            <i class="fas fa-microphone"></i> 开始认读
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="controls-section">
+                <div class="controls-card">
+                    <button class="btn btn-primary" id="drawButton">
+                        <i class="fas fa-random"></i> 抽取字母
+                        <span class="difficulty-tag" id="difficultyTag">Level 1</span>
+                    </button>
+                    
+                    <div class="mode-controls">
+                        <div class="mode-toggle">
+                            <div class="toggle-label">
+                                <i class="fas fa-microphone"></i>
+                                <span>认读模式</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="readModeToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="mode-toggle">
+                            <div class="toggle-label">
+                                <i class="fas fa-trophy"></i>
+                                <span>挑战模式</span>
+                            </div>
+                            <label class="toggle-switch challenge">
+                                <input type="checkbox" id="challengeModeToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; text-align: center;" id="caseTypeSection">
+                        <h3 style="margin-bottom: 10px; color: #2c3e50; font-size: 1.2rem;">字母大小写设置</h3>
+                        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                            <div>
+                                <input type="radio" id="bothCase" name="caseType" checked>
+                                <label for="bothCase" style="font-size: 1rem; margin-left: 4px;">随机大小写</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="upperOnly" name="caseType">
+                                <label for="upperOnly" style="font-size: 1rem; margin-left: 4px;">仅大写</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="lowerOnly" name="caseType">
+                                <label for="lowerOnly" style="font-size: 1rem; margin-left: 4px;">仅小写</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats-card">
+                    <h3 class="stats-title">学习统计</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalDraws">0</div>
+                            <div class="stat-label">总练习次数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="correctPronunciations">0</div>
+                            <div class="stat-label">正确认读次数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="abbreviationCount">0</div>
+                            <div class="stat-label">挑战模式次数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="challengeSuccess">0</div>
+                            <div class="stat-label">挑战成功次数</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <!-- 快速反馈提示 -->
+        <div class="quick-feedback" id="quickFeedback"></div>
+        
+        <div class="history-section">
+            <h3 class="history-title">最近练习的内容</h3>
+            <div class="history-list" id="historyList">
+                <!-- 历史字母将通过JavaScript动态添加 -->
+            </div>
+        </div>
+        
+        <footer>
+            <p>英语字母语音认读系统 &copy; 2023 | 适用于英语字母教学和发音练习</p>
+            <p>提示：语音识别功能需要浏览器支持，请在Chrome、Edge等现代浏览器中使用</p>
+        </footer>
+    </div>
+
+    <!-- 音频元素用于播放音效 -->
+    <audio id="correctSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="incorrectSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const currentLetter = document.getElementById('currentLetter');
+            const letterInfo = document.getElementById('letterInfo');
+            const drawButton = document.getElementById('drawButton');
+            const recognitionDrawButton = document.getElementById('recognitionDrawButton');
+            const historyList = document.getElementById('historyList');
+            const speakLetterBtn = document.getElementById('speakLetterBtn');
+            const recognitionResult = document.getElementById('recognitionResult');
+            const resultStatus = document.getElementById('resultStatus');
+            const resultText = document.getElementById('resultText');
+            const startRecognitionBtn = document.getElementById('startRecognitionBtn');
+            const recordingIndicator = document.getElementById('recordingIndicator');
+            const recognitionControls = document.getElementById('recognitionControls');
+            const difficultyTag = document.getElementById('difficultyTag');
+            const abbreviationMeaning = document.getElementById('abbreviationMeaning');
+            const meaningText = document.getElementById('meaningText');
+            const caseTypeSection = document.getElementById('caseTypeSection');
+            const challengeHint = document.getElementById('challengeHint');
+            const readModeToggle = document.getElementById('readModeToggle');
+            const challengeModeToggle = document.getElementById('challengeModeToggle');
+            const quickFeedback = document.getElementById('quickFeedback');
+            const correctSound = document.getElementById('correctSound');
+            const incorrectSound = document.getElementById('incorrectSound');
+            
+            // 统计元素
+            const totalDrawsElement = document.getElementById('totalDraws');
+            const correctPronunciationsElement = document.getElementById('correctPronunciations');
+            const abbreviationCountElement = document.getElementById('abbreviationCount');
+            const challengeSuccessElement = document.getElementById('challengeSuccess');
+            
+            // 字母数据
+            const uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+            
+            // Level 2缩写数据
+            const abbreviations = [
+                {abbr: "UN", meaning: "联合国"},
+                {abbr: "ATM", meaning: "自动取款机"},
+                {abbr: "CPU", meaning: "中央处理器"},
+                {abbr: "DNA", meaning: "脱氧核糖核酸"},
+                {abbr: "BBC", meaning: "英国广播公司"},
+                {abbr: "CNN", meaning: "美国有线电视新闻网"},
+                {abbr: "DIY", meaning: "自己动手做"},
+                {abbr: "FAQ", meaning: "常见问题"},
+                {abbr: "GPS", meaning: "全球定位系统"},
+                {abbr: "ID", meaning: "身份证"},
+                {abbr: "IQ", meaning: "智商"},
+                {abbr: "LCD", meaning: "液晶显示器"},
+                {abbr: "NBA", meaning: "美国职业篮球联赛"},
+                {abbr: "UFO", meaning: "不明飞行物"},
+                {abbr: "USB", meaning: "通用串行总线"},
+                {abbr: "WWW", meaning: "万维网"},
+                {abbr: "ZIP", meaning: "邮政编码"},
+                {abbr: "OK", meaning: "好的"},
+                {abbr: "TV", meaning: "电视"},
+                {abbr: "PC", meaning: "个人电脑"},
+                {abbr: "CD", meaning: "光盘"},
+                {abbr: "DJ", meaning: "唱片骑师"},
+                {abbr: "EQ", meaning: "情商"},
+                {abbr: "FM", meaning: "调频"},
+                {abbr: "VIP", meaning: "贵宾"}
+            ];
+            
+            // 初始化变量
+            let currentLetterData = { letter: 'A', isUppercase: true, type: 'single' };
+            let totalDraws = 0;
+            let correctPronunciations = 0;
+            let abbreviationCount = 0;
+            let challengeSuccess = 0;
+            let history = [];
+            let isReadMode = false;
+            let isChallengeMode = false;
+            let recognitionActive = false;
+            let speechSynthesis = window.speechSynthesis;
+            let recognition = null;
+            
+            // 检查浏览器是否支持语音识别
+            const isSpeechRecognitionSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+            
+            // 初始化语音识别
+            if (isSpeechRecognitionSupported) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'en-US';
+                
+                recognition.onstart = function() {
+                    console.log('语音识别已启动');
+                    recordingIndicator.style.display = 'flex';
+                };
+                
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript.trim().toUpperCase();
+                    console.log('识别结果:', transcript);
+                    
+                    // 获取目标内容
+                    const target = currentLetterData.letter.toUpperCase();
+                    
+                    // 检查识别结果
+                    let isCorrect = false;
+                    let feedbackMessage = '';
+                    
+                    if (currentLetterData.type === 'single') {
+                        // 单个字母模式
+                        if (transcript.includes(target) || transcript === target.toLowerCase()) {
+                            isCorrect = true;
+                            feedbackMessage = `✓ 太棒了！你读对了字母 "${target}"！`;
+                            correctPronunciations++;
+                            correctPronunciationsElement.textContent = correctPronunciations;
+                        } else if (transcript.length === 1 && transcript === target) {
+                            isCorrect = true;
+                            feedbackMessage = `✓ 太棒了！你读对了字母 "${target}"！`;
+                            correctPronunciations++;
+                            correctPronunciationsElement.textContent = correctPronunciations;
+                        } else {
+                            feedbackMessage = `✗ 不对哦，你读的是"${transcript}"，应该是"${target}"。再试试看！`;
+                        }
+                    } else {
+                        // 缩写模式
+                        // 去掉所有空格和标点
+                        const cleanTranscript = transcript.replace(/[^A-Z]/g, '');
+                        
+                        if (cleanTranscript === target) {
+                            isCorrect = true;
+                            feedbackMessage = `✓ 哇！你太厉害了！正确读出了缩写 "${target}"！`;
+                            challengeSuccess++;
+                            challengeSuccessElement.textContent = challengeSuccess;
+                        } else {
+                            // 检查是否逐个字母读对了
+                            const targetLetters = target.split('');
+                            const transcriptLetters = cleanTranscript.split('');
+                            
+                            let matchedLetters = 0;
+                            for (let i = 0; i < Math.min(targetLetters.length, transcriptLetters.length); i++) {
+                                if (targetLetters[i] === transcriptLetters[i]) {
+                                    matchedLetters++;
+                                }
+                            }
+                            
+                            if (matchedLetters === targetLetters.length && transcriptLetters.length === targetLetters.length) {
+                                isCorrect = true;
+                                feedbackMessage = `✓ 太棒了！你正确读出了缩写 "${target}" 的每一个字母！`;
+                                challengeSuccess++;
+                                challengeSuccessElement.textContent = challengeSuccess;
+                            } else {
+                                feedbackMessage = `✗ 差一点！你读的是"${cleanTranscript || transcript}"，应该是"${target}"。再试试看！`;
+                            }
+                        }
+                    }
+                    
+                    // 显示快速反馈
+                    showQuickFeedback(isCorrect, feedbackMessage);
+                    
+                    // 播放音效
+                    if (isCorrect) {
+                        correctSound.currentTime = 0;
+                        correctSound.play().catch(e => console.log("音频播放失败:", e));
+                    } else {
+                        incorrectSound.currentTime = 0;
+                        incorrectSound.play().catch(e => console.log("音频播放失败:", e));
+                    }
+                    
+                    // 重置认读界面
+                    resetRecognitionResult();
+                    
+                    // 如果是正确认读，2秒后自动抽取下一个字母
+                    if (isCorrect) {
+                        setTimeout(() => {
+                            drawLetter();
+                        }, 2000);
+                    }
+                };
+                
+                recognition.onerror = function(event) {
+                    console.error('语音识别错误:', event.error);
+                    showQuickFeedback(false, '抱歉，语音识别出现问题。请确保您的麦克风已打开，并重试。');
+                    
+                    // 重置认读界面
+                    resetRecognitionResult();
+                };
+                
+                recognition.onend = function() {
+                    console.log('语音识别结束');
+                    recordingIndicator.style.display = 'none';
+                };
+            } else {
+                // 浏览器不支持语音识别
+                readModeToggle.disabled = true;
+                readModeToggle.parentElement.style.opacity = '0.5';
+                readModeToggle.parentElement.title = "浏览器不支持语音识别";
+            }
+            
+            // 显示快速反馈
+            function showQuickFeedback(isCorrect, message) {
+                quickFeedback.textContent = message;
+                quickFeedback.className = 'quick-feedback ' + (isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+                quickFeedback.style.display = 'block';
+                
+                // 2.5秒后自动隐藏
+                setTimeout(() => {
+                    quickFeedback.style.display = 'none';
+                }, 2500);
+            }
+            
+            // 切换认读模式
+            function toggleReadMode() {
+                isReadMode = !isReadMode;
+                
+                if (isReadMode) {
+                    // 进入认读模式
+                    recognitionResult.classList.add('recognition-active');
+                    recognitionControls.style.display = 'block';
+                    resetRecognitionResult();
+                } else {
+                    // 退出认读模式
+                    recognitionResult.classList.remove('recognition-active');
+                    recognitionControls.style.display = 'none';
+                    stopRecognition();
+                }
+            }
+            
+            // 切换挑战模式
+            function toggleChallengeMode() {
+                isChallengeMode = !isChallengeMode;
+                
+                if (isChallengeMode) {
+                    // 进入挑战模式
+                    caseTypeSection.style.display = 'none';
+                    difficultyTag.textContent = 'Level 2';
+                } else {
+                    // 退出挑战模式
+                    caseTypeSection.style.display = 'block';
+                    difficultyTag.textContent = 'Level 1';
+                }
+                
+                // 抽取一个新字母/缩写
+                drawLetter();
+            }
+            
+            // 重置认读结果
+            function resetRecognitionResult() {
+                resultStatus.textContent = '准备开始认读';
+                resultStatus.className = 'result-status result-waiting';
+                if (isChallengeMode && currentLetterData.type === 'abbreviation') {
+                    resultText.textContent = `请点击"开始认读"按钮，然后大声读出缩写"${currentLetterData.letter}"的每个字母。`;
+                } else {
+                    resultText.textContent = '请点击"开始认读"按钮，然后大声读出屏幕上显示的字母。';
+                }
+                startRecognitionBtn.innerHTML = '<i class="fas fa-microphone"></i> 开始认读';
+                recordingIndicator.style.display = 'none';
+                recognitionActive = false;
+            }
+            
+            // 开始语音识别
+            function startRecognition() {
+                if (!isSpeechRecognitionSupported) return;
+                
+                recognitionActive = true;
+                resultStatus.textContent = '请读出字母...';
+                resultStatus.className = 'result-status result-waiting';
+                
+                if (isChallengeMode && currentLetterData.type === 'abbreviation') {
+                    resultText.textContent = `请大声读出缩写"${currentLetterData.letter}"的每个字母，比如"U-N"。`;
+                } else {
+                    resultText.textContent = '请大声读出屏幕上显示的字母。';
+                }
+                
+                startRecognitionBtn.innerHTML = '<i class="fas fa-microphone-slash"></i> 停止认读';
+                
+                try {
+                    recognition.start();
+                } catch (error) {
+                    console.error('启动语音识别失败:', error);
+                }
+            }
+            
+            // 停止语音识别
+            function stopRecognition() {
+                if (recognition && recognitionActive) {
+                    recognitionActive = false;
+                    try {
+                        recognition.stop();
+                    } catch (error) {
+                        console.error('停止语音识别失败:', error);
+                    }
+                }
+            }
+            
+            // 播放发音
+            function speakLetter() {
+                if (!speechSynthesis) {
+                    alert('您的浏览器不支持语音合成功能');
+                    return;
+                }
+                
+                const textToSpeak = currentLetterData.letter;
+                let utterance;
+                
+                if (currentLetterData.type === 'abbreviation') {
+                    // 对于缩写，逐个字母读
+                    const letters = textToSpeak.split('');
+                    const letterSounds = letters.map(letter => letter).join(' ');
+                    utterance = new SpeechSynthesisUtterance(letterSounds);
+                } else {
+                    // 对于单个字母，读字母本身
+                    utterance = new SpeechSynthesisUtterance(textToSpeak);
+                }
+                
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8; // 稍微放慢速度
+                
+                // 停止任何正在播放的语音
+                speechSynthesis.cancel();
+                
+                // 播放发音
+                speechSynthesis.speak(utterance);
+                
+                // 为按钮添加反馈效果
+                speakLetterBtn.classList.add('pulse');
+                setTimeout(() => {
+                    speakLetterBtn.classList.remove('pulse');
+                }, 500);
+            }
+            
+            // 抽取字母函数
+            function drawLetter() {
+                // 检查是否在挑战模式
+                if (isChallengeMode) {
+                    drawAbbreviation();
+                    return;
+                }
+                
+                // 获取当前选择的字母大小写类型
+                let caseType = 'both';
+                if (document.getElementById('upperOnly').checked) caseType = 'upper';
+                if (document.getElementById('lowerOnly').checked) caseType = 'lower';
+                
+                // 根据选择的类型随机抽取字母
+                let letter, isUppercase;
+                
+                if (caseType === 'upper') {
+                    letter = uppercaseLetters[Math.floor(Math.random() * 26)];
+                    isUppercase = true;
+                } else if (caseType === 'lower') {
+                    letter = lowercaseLetters[Math.floor(Math.random() * 26)];
+                    isUppercase = false;
+                } else {
+                    // 随机大小写
+                    isUppercase = Math.random() > 0.5;
+                    letter = isUppercase ? 
+                        uppercaseLetters[Math.floor(Math.random() * 26)] : 
+                        lowercaseLetters[Math.floor(Math.random() * 26)];
+                }
+                
+                // 更新当前字母
+                currentLetterData = { letter, isUppercase, type: 'single' };
+                
+                // 更新统计
+                totalDraws++;
+                
+                // 添加到历史记录
+                history.unshift({ letter, isUppercase, type: 'single' });
+                if (history.length > 20) history.pop(); // 限制历史记录长度
+                
+                // 更新显示和统计
+                updateDisplay();
+                updateStats();
+                updateHistory();
+                
+                // 重置认读结果
+                if (isReadMode) {
+                    resetRecognitionResult();
+                }
+                
+                // 添加动画效果
+                currentLetter.classList.add('pulse');
+                setTimeout(() => {
+                    currentLetter.classList.remove('pulse');
+                }, 500);
+            }
+            
+            // 抽取缩写函数
+            function drawAbbreviation() {
+                // 随机选择一个缩写
+                const randomIndex = Math.floor(Math.random() * abbreviations.length);
+                const abbreviation = abbreviations[randomIndex];
+                
+                // 更新当前内容
+                currentLetterData = { 
+                    letter: abbreviation.abbr, 
+                    isUppercase: true, 
+                    type: 'abbreviation',
+                    meaning: abbreviation.meaning
+                };
+                
+                // 更新统计
+                totalDraws++;
+                abbreviationCount++;
+                
+                // 添加到历史记录
+                history.unshift({ 
+                    letter: abbreviation.abbr, 
+                    isUppercase: true, 
+                    type: 'abbreviation',
+                    meaning: abbreviation.meaning
+                });
+                if (history.length > 20) history.pop();
+                
+                // 更新显示和统计
+                updateDisplay();
+                updateStats();
+                updateHistory();
+                
+                // 重置认读结果
+                if (isReadMode) {
+                    resetRecognitionResult();
+                }
+                
+                // 添加动画效果
+                currentLetter.classList.add('pulse');
+                setTimeout(() => {
+                    currentLetter.classList.remove('pulse');
+                }, 500);
+            }
+            
+            // 更新显示
+            function updateDisplay() {
+                const { letter, isUppercase, type, meaning } = currentLetterData;
+                
+                currentLetter.textContent = letter;
+                
+                // 设置样式类
+                currentLetter.className = 'letter-display';
+                
+                if (type === 'abbreviation') {
+                    currentLetter.classList.add('abbreviation');
+                    currentLetter.classList.add('challenge-color');
+                    letterInfo.textContent = `英文缩写: ${letter}`;
+                    abbreviationMeaning.style.display = 'block';
+                    meaningText.textContent = meaning;
+                    challengeHint.style.display = 'block';
+                } else {
+                    currentLetter.classList.remove('abbreviation');
+                    currentLetter.classList.add(isUppercase ? 'uppercase' : 'lowercase');
+                    letterInfo.textContent = isUppercase ? `大写字母 ${letter}` : `小写字母 ${letter}`;
+                    abbreviationMeaning.style.display = 'none';
+                    challengeHint.style.display = 'none';
+                }
+            }
+            
+            // 更新统计信息
+            function updateStats() {
+                totalDrawsElement.textContent = totalDraws;
+                correctPronunciationsElement.textContent = correctPronunciations;
+                abbreviationCountElement.textContent = abbreviationCount;
+                challengeSuccessElement.textContent = challengeSuccess;
+            }
+            
+            // 更新历史记录
+            function updateHistory() {
+                historyList.innerHTML = '';
+                
+                history.forEach(item => {
+                    const historyElement = document.createElement('div');
+                    
+                    if (item.type === 'abbreviation') {
+                        historyElement.className = 'history-letter abbreviation-history history-abbreviation';
+                        historyElement.textContent = item.letter;
+                        historyElement.title = item.meaning;
+                    } else {
+                        historyElement.className = `history-letter ${item.isUppercase ? 'uppercase-history' : 'lowercase-history'}`;
+                        historyElement.textContent = item.letter;
+                    }
+                    
+                    historyList.appendChild(historyElement);
+                });
+            }
+            
+            // 事件监听
+            drawButton.addEventListener('click', drawLetter);
+            recognitionDrawButton.addEventListener('click', drawLetter);
+            speakLetterBtn.addEventListener('click', speakLetter);
+            
+            readModeToggle.addEventListener('change', function() {
+                toggleReadMode();
+            });
+            
+            challengeModeToggle.addEventListener('change', function() {
+                toggleChallengeMode();
+            });
+            
+            startRecognitionBtn.addEventListener('click', function() {
+                if (recognitionActive) {
+                    stopRecognition();
+                    resetRecognitionResult();
+                } else {
+                    startRecognition();
+                }
+            });
+            
+            // 初始抽取一个字母
+            drawLetter();
+            
+            // 添加键盘支持
+            document.addEventListener('keydown', function(event) {
+                // 空格键抽取新字母
+                if (event.code === 'Space') {
+                    event.preventDefault();
+                    drawLetter();
+                }
+                
+                // S键播放字母发音
+                if (event.code === 'KeyS') {
+                    event.preventDefault();
+                    speakLetter();
+                }
+                
+                // R键切换认读模式
+                if (event.code === 'KeyR') {
+                    event.preventDefault();
+                    readModeToggle.checked = !readModeToggle.checked;
+                    toggleReadMode();
+                }
+                
+                // C键切换挑战模式
+                if (event.code === 'KeyC') {
+                    event.preventDefault();
+                    challengeModeToggle.checked = !challengeModeToggle.checked;
+                    toggleChallengeMode();
+                }
+            });
+            
+            // 添加触摸设备优化
+            drawButton.addEventListener('touchstart', function() {
+                this.style.transform = 'translateY(-1px)';
+            });
+            
+            drawButton.addEventListener('touchend', function() {
+                this.style.transform = 'translateY(0)';
+            });
+            
+            speakLetterBtn.addEventListener('touchstart', function() {
+                this.style.transform = 'translateY(-1px)';
+            });
+            
+            speakLetterBtn.addEventListener('touchend', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
