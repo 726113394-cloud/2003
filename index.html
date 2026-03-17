@@ -1,0 +1,2276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三年级英语语音认读系统（有道云端识别）</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入WavEncoder用于音频格式转换 -->
+    <script src="https://cdn.jsdelivr.net/npm/wavefile@11.0.0/dist/wavefile.min.js"></script>
+    <style>
+        /* 此处粘贴您之前最终版本的完整CSS，为避免重复，请复制您最后确认的样式 */
+        /* 由于篇幅，这里省略具体CSS，您可直接保留原有样式 */
+        /* 以下仅列出新增或修改的样式（键盘提示工具等已存在，无需改动） */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            color: #333;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body::after {
+            content: "来自太空的小头脑";
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1rem;
+            color: rgba(155, 89, 182, 0.2);
+            font-weight: bold;
+            z-index: 9999;
+            pointer-events: none;
+            transform: rotate(-15deg);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 2rem;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.4;
+        }
+        .content-type-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .content-type-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+        .content-type-btn.active {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        .content-type-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .letter-display-section {
+            flex: 1;
+            min-width: 300px;
+            max-width: 600px;
+            position: relative;
+        }
+        .letter-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px 15px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .letter-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+        .challenge-toggle-container {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
+        }
+        .challenge-toggle {
+            display: flex;
+            align-items: center;
+            background-color: rgba(155, 89, 182, 0.1);
+            border-radius: 20px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .challenge-toggle.active {
+            background-color: rgba(155, 89, 182, 0.2);
+            border-color: #9b59b6;
+        }
+        .challenge-toggle:hover {
+            background-color: rgba(155, 89, 182, 0.3);
+        }
+        .challenge-toggle i {
+            color: #9b59b6;
+            font-size: 1rem;
+            margin-right: 5px;
+        }
+        .challenge-toggle span {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #8e44ad;
+        }
+        .letter-display {
+            font-size: 18rem;
+            font-weight: 900;
+            line-height: 1;
+            margin: 15px 0;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            min-height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Times New Roman", Times, serif;
+            max-width: 100%;
+            overflow: hidden;
+            word-break: break-word;
+        }
+        .letter-display.word {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .letter-display.sentence {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            min-height: 200px;
+            padding: 10px;
+        }
+        .letter-display.abbreviation {
+            letter-spacing: 6px;
+            font-family: "Times New Roman", Times, serif;
+        }
+        .uppercase {
+            color: #3498db;
+        }
+        .lowercase {
+            color: #e74c3c;
+        }
+        .word-color {
+            color: #2ecc71;
+        }
+        .sentence-color {
+            color: #f39c12;
+        }
+        .challenge-color {
+            color: #9b59b6;
+            background: linear-gradient(to right, #9b59b6, #e74c3c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .letter-info {
+            font-size: 1.5rem;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .word-info {
+            font-size: 1.5rem;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .sentence-info {
+            font-size: 1.5rem;
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: inline-block;
+        }
+        .abbreviation-meaning {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #e8f4fc;
+            border-radius: 8px;
+            color: #2980b9;
+            font-style: italic;
+            display: inline-block;
+            border-left: 4px solid #3498db;
+        }
+        .word-meaning {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #e8f6ef;
+            border-radius: 8px;
+            color: #27ae60;
+            font-style: italic;
+            display: inline-block;
+            border-left: 4px solid #2ecc71;
+        }
+        .sentence-translation {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #fef9e7;
+            border-radius: 8px;
+            color: #d68910;
+            font-style: italic;
+            display: inline-block;
+            border-left: 4px solid #f39c12;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .textbook-note {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        .handwriting-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 1100px;
+            margin-top: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            display: none;
+        }
+        .handwriting-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        .handwriting-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .handwriting-image {
+            max-width: 500px;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .handwriting-info {
+            flex: 1;
+            min-width: 300px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .handwriting-info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .handwriting-info p {
+            color: #7f8c8d;
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        .handwriting-tips {
+            background-color: #e8f4fc;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            margin-top: 10px;
+        }
+        .controls-section {
+            flex: 1;
+            min-width: 280px;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .controls-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px 20px;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .keyboard-hint {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #7f8c8d;
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.3s ease;
+        }
+        .keyboard-hint:hover {
+            color: #3498db;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+            transform: scale(1.05);
+        }
+        .keyboard-tooltip {
+            position: absolute;
+            top: 60px;
+            right: 10px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            padding: 15px 20px;
+            z-index: 100;
+            min-width: 220px;
+            border: 1px solid #e0e0e0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #2c3e50;
+            transition: opacity 0.2s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+        .keyboard-tooltip.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .keyboard-tooltip::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            right: 18px;
+            border-width: 0 10px 10px 10px;
+            border-style: solid;
+            border-color: transparent transparent white transparent;
+            filter: drop-shadow(0 -2px 2px rgba(0,0,0,0.05));
+        }
+        .keyboard-tooltip ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .keyboard-tooltip li {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: baseline;
+        }
+        .keyboard-tooltip .key {
+            display: inline-block;
+            min-width: 45px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: monospace;
+            font-weight: bold;
+            text-align: center;
+            margin-right: 10px;
+            color: #3498db;
+            border: 1px solid #ddd;
+        }
+        .keyboard-tooltip .desc {
+            color: #555;
+        }
+        @media (max-width: 480px) {
+            .keyboard-hint {
+                width: 36px;
+                height: 36px;
+                font-size: 1.3rem;
+                top: 8px;
+                right: 10px;
+            }
+            .keyboard-tooltip {
+                top: 50px;
+                right: 5px;
+                min-width: 200px;
+                padding: 12px;
+            }
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 18px 15px;
+            margin: 12px 0;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+        .btn-primary {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(to right, #2980b9, #2573a7);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.5);
+        }
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+        .btn-warning {
+            background: linear-gradient(to right, #f39c12, #e67e22);
+            color: white;
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+        }
+        .btn-warning:hover {
+            background: linear-gradient(to right, #e67e22, #d35400);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(243, 156, 18, 0.5);
+        }
+        .btn-secondary {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+            color: white;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(to right, #27ae60, #219955);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.5);
+        }
+        .btn-mode-toggle {
+            background: linear-gradient(to right, #9b59b6, #8e44ad);
+            color: white;
+            box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
+        }
+        .btn-mode-toggle:hover {
+            background: linear-gradient(to right, #8e44ad, #7d3c98);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(155, 89, 182, 0.5);
+        }
+        .difficulty-tag {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background-color: #f1c40f;
+            color: #2c3e50;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        .mode-controls {
+            margin-top: 15px;
+        }
+        .mode-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 12px 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 30px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider {
+            background-color: #3498db;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+        .unit-selector {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            text-align: left;
+            transition: background-color 0.2s ease;
+        }
+        .unit-selector:hover {
+            background-color: #e9ecef;
+        }
+        .unit-selector label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        .unit-selector select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #bdc3c7;
+            border-radius: 12px;
+            font-size: 1rem;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .unit-selector select:hover {
+            border-color: #3498db;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+            transform: scale(1.02);
+        }
+        .unit-selector select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+        }
+        .voice-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .voice-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-speak {
+            background: linear-gradient(to right, #1abc9c, #16a085);
+            color: white;
+        }
+        .btn-speak:hover {
+            background: linear-gradient(to right, #16a085, #138d75);
+            transform: translateY(-2px);
+        }
+        .stats-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        .stats-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+        .stat-label {
+            font-size: 0.95rem;
+            color: #7f8c8d;
+            margin-top: 4px;
+        }
+        .recognition-result {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+        .recognition-active {
+            display: block;
+        }
+        .result-status {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            animation: fadeInOut 2.5s ease-in-out;
+        }
+        .result-correct {
+            background-color: #d5f4e6;
+            color: #27ae60;
+            border: 3px solid #2ecc71;
+        }
+        .result-incorrect {
+            background-color: #fadbd8;
+            color: #e74c3c;
+            border: 3px solid #e74c3c;
+        }
+        .result-waiting {
+            background-color: #fef9e7;
+            color: #f39c12;
+            border: 3px solid #f39c12;
+        }
+        .result-text {
+            font-size: 1.3rem;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+        .recording-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 15px 0;
+        }
+        .recording-dot {
+            width: 18px;
+            height: 18px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.8); opacity: 0.7; }
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(10px); }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #7f8c8d;
+            padding: 15px;
+            font-size: 0.9rem;
+            width: 100%;
+            position: relative;
+        }
+        .watermark {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(155, 89, 182, 0.3);
+            font-weight: bold;
+            font-size: 1rem;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .history-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 1100px;
+            margin-top: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        .history-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        .history-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            max-height: 120px;
+            overflow-y: auto;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .history-letter {
+            font-size: 2rem;
+            font-weight: bold;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            font-family: "Times New Roman", Times, serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .history-letter:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        .history-word {
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            min-width: 80px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .history-word:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        .history-sentence {
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            min-width: 150px;
+            max-width: 250px;
+            text-align: center;
+            line-height: 1.3;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .history-sentence:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        .history-abbreviation {
+            font-size: 1.5rem;
+            width: auto;
+            padding: 0 12px;
+            font-family: "Times New Roman", Times, serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .history-abbreviation:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        .uppercase-history {
+            background-color: #e1f5fe;
+            color: #0288d1;
+        }
+        .lowercase-history {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+        .word-history {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .sentence-history {
+            background-color: #fff8e1;
+            color: #ff8f00;
+        }
+        .abbreviation-history {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 1.6rem; }
+            .letter-display { font-size: 12rem; min-height: 180px; }
+            .btn { padding: 15px; font-size: 1.2rem; }
+            .main-content { flex-direction: column; align-items: center; }
+            .letter-display-section, .controls-section { width: 100%; max-width: 100%; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .challenge-toggle-container { top: 10px; right: 10px; }
+            .challenge-toggle span { font-size: 0.8rem; }
+            .handwriting-container { flex-direction: column; }
+            .handwriting-image { max-width: 100%; }
+        }
+        @media (max-width: 480px) {
+            h1 { font-size: 1.4rem; }
+            .letter-display { font-size: 10rem; min-height: 150px; }
+            .btn { padding: 12px; font-size: 1.1rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .challenge-toggle span { display: none; }
+            .challenge-toggle { padding: 5px 8px; }
+        }
+        .pulse { animation: pulse 0.5s ease-in-out; }
+        .challenge-hint { font-size: 1.1rem; margin-top: 12px; color: #7b1fa2; font-style: italic; }
+        .quick-feedback {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 1000; padding: 15px 25px; border-radius: 10px;
+            font-size: 1.4rem; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: fadeInOut 2.5s ease-in-out; display: none;
+        }
+        .feedback-correct { background-color: #d5f4e6; color: #27ae60; border: 3px solid #2ecc71; }
+        .feedback-incorrect { background-color: #fadbd8; color: #e74c3c; border: 3px solid #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-volume-up"></i> 三年级英语语音认读系统（有道云端识别）</h1>
+            <p class="subtitle">选择认读内容：字母、单词或句子。开启认读模式进行发音练习，开启挑战模式认读英文缩写。</p>
+            
+            <div class="content-type-selector">
+                <button class="content-type-btn active" id="letterBtn">
+                    <i class="fas fa-font"></i> 字母认读
+                </button>
+                <button class="content-type-btn" id="wordBtn">
+                    <i class="fas fa-spell-check"></i> 单词认读
+                </button>
+                <button class="content-type-btn" id="sentenceBtn">
+                    <i class="fas fa-comment-dots"></i> 句子认读
+                </button>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <section class="letter-display-section">
+                <div class="letter-card">
+                    <div class="challenge-toggle-container" id="challengeToggleContainer" style="display: none;">
+                        <div class="challenge-toggle" id="challengeToggle">
+                            <i class="fas fa-trophy"></i>
+                            <span>挑战模式</span>
+                        </div>
+                    </div>
+                    
+                    <div class="letter-display uppercase" id="currentContent">A</div>
+                    
+                    <div class="letter-info" id="contentInfo">大写字母 A</div>
+                    
+                    <div class="abbreviation-meaning" id="abbreviationMeaning" style="display: none;">
+                        含义：<span id="meaningText">联合国</span>
+                    </div>
+                    
+                    <div class="word-meaning" id="wordMeaning" style="display: none;">
+                        <span id="wordPhonetic"></span><br>
+                        中文：<span id="wordChinese">名字</span>
+                        <div class="textbook-note">选自人教版小学英语PEP教材</div>
+                    </div>
+                    
+                    <div class="sentence-translation" id="sentenceTranslation" style="display: none;">
+                        中文：<span id="sentenceChinese">我的名字是...</span>
+                        <div class="textbook-note">选自人教版小学英语PEP教材</div>
+                    </div>
+                    
+                    <div class="challenge-hint" id="challengeHint" style="display: none;">
+                        💡 提示：请逐个字母读出来，比如 "U-N" 读作 "U, N"
+                    </div>
+                    
+                    <div class="voice-controls">
+                        <button class="voice-btn btn-speak" id="speakContentBtn">
+                            <i class="fas fa-volume-up"></i> 播放发音
+                        </button>
+                    </div>
+                    
+                    <div class="recognition-controls" id="recognitionControls" style="display: none; margin-top: 15px;">
+                        <button class="btn btn-primary" id="recognitionDrawButton">
+                            <i class="fas fa-random"></i> 抽取新内容
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="recognition-result" id="recognitionResult">
+                    <div class="result-status result-waiting" id="resultStatus">
+                        准备开始认读
+                    </div>
+                    <div class="result-text" id="resultText">
+                        请点击"开始认读"按钮，然后大声读出屏幕上显示的内容。
+                    </div>
+                    
+                    <div class="recording-indicator" id="recordingIndicator" style="display: none;">
+                        <div class="recording-dot"></div>
+                        <div style="font-size: 1.1rem; font-weight: bold; color: #e74c3c;">
+                            正在录音...
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-warning" id="startRecognitionBtn" style="width: 100%;">
+                            <i class="fas fa-microphone"></i> 开始认读
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="controls-section">
+                <div class="controls-card">
+                    <!-- 键盘快捷键提示图标 -->
+                    <div class="keyboard-hint" id="keyboardHint">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="keyboard-tooltip" id="keyboardTooltip">
+                        <ul>
+                            <li><span class="key">空格</span><span class="desc">抽取内容</span></li>
+                            <li><span class="key">S</span><span class="desc">播放发音</span></li>
+                            <li><span class="key">R</span><span class="desc">认读模式开关</span></li>
+                            <li><span class="key">C</span><span class="desc">挑战模式（字母）</span></li>
+                            <li><span class="key">M</span><span class="desc">顺序/随机切换</span></li>
+                            <li><span class="key">1</span><span class="desc">字母认读</span></li>
+                            <li><span class="key">2</span><span class="desc">单词认读</span></li>
+                            <li><span class="key">3</span><span class="desc">句子认读</span></li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary" id="drawButton">
+                        <i class="fas fa-random"></i> 抽取内容
+                        <span class="difficulty-tag" id="difficultyTag">Level 1</span>
+                    </button>
+                    
+                    <div class="unit-selector" id="unitSelector" style="display: none;">
+                        <label for="unitSelect"><i class="fas fa-layer-group"></i> 选择单元：</label>
+                        <select id="unitSelect"></select>
+                    </div>
+                    
+                    <div class="mode-controls">
+                        <div class="mode-toggle">
+                            <div class="toggle-label">
+                                <i class="fas fa-microphone"></i>
+                                <span>认读模式</span>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="readModeToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-mode-toggle" id="studyModeBtn">
+                        <i class="fas fa-random"></i> 切换为顺序认读模式
+                    </button>
+                    
+                    <div style="margin-top: 15px; text-align: center;">
+                        <p style="color: #7f8c8d; font-size: 0.9rem; margin-bottom: 5px;">
+                            <i class="fas fa-info-circle"></i> 当前模式：<span id="currentStudyMode">抽读模式</span>
+                        </p>
+                        <p style="color: #7f8c8d; font-size: 0.8rem;">
+                            顺序模式：按单元顺序学习
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="stats-card">
+                    <h3 class="stats-title">学习统计</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="totalDraws">0</div>
+                            <div class="stat-label" id="totalLabel">总练习次数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="correctPronunciations">0</div>
+                            <div class="stat-label" id="correctLabel">正确认读次数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="currentIndex">0</div>
+                            <div class="stat-label">当前学习进度</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="accuracyRate">0%</div>
+                            <div class="stat-label">认读准确率</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <div class="handwriting-section" id="handwritingSection">
+            <h3 class="handwriting-title">英语字母手写体示例</h3>
+            <div class="handwriting-container">
+                <img id="handwritingImage" class="handwriting-image" src="26字母表手写体.jpg" alt="字母手写体" onerror="this.style.display='none'">
+                <div class="handwriting-info">
+                    <h3>英语字母手写体书写要点</h3>
+                    <p>1. 大写字母占上两格，不顶第一线</p>
+                    <p>2. 小写字母根据字母形状占格不同</p>
+                    <p>3. 注意字母的倾斜度，一般向右倾斜约5°</p>
+                    <p>4. 字母间保持适当间距，单词内字母紧凑</p>
+                    <div class="handwriting-tips">
+                        <p><strong>提示：</strong>将单字母图片（如 A.png, a.png）放在 handwriting 文件夹下可显示对应手写体；若无则显示上方大图。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-feedback" id="quickFeedback"></div>
+        
+        <div class="history-section">
+            <h3 class="history-title">最近练习的内容 <span style="font-size: 0.9rem; color: #7f8c8d;">(点击可重新练习)</span></h3>
+            <div class="history-list" id="historyList"></div>
+        </div>
+        
+        <footer>
+            <p>三年级英语语音认读系统（含上册、下册） &copy; 2025 | 云端识别由有道智云提供</p>
+            <p>提示：请确保已正确配置后端API，并允许麦克风权限。</p>
+            <div class="watermark">来自太空的小头脑</div>
+        </footer>
+    </div>
+
+    <audio id="correctSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="incorrectSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        (function() {
+            // ---------- DOM 元素 ----------
+            const currentContent = document.getElementById('currentContent');
+            const contentInfo = document.getElementById('contentInfo');
+            const drawButton = document.getElementById('drawButton');
+            const recognitionDrawButton = document.getElementById('recognitionDrawButton');
+            const historyList = document.getElementById('historyList');
+            const speakContentBtn = document.getElementById('speakContentBtn');
+            const recognitionResult = document.getElementById('recognitionResult');
+            const resultStatus = document.getElementById('resultStatus');
+            const resultText = document.getElementById('resultText');
+            const startRecognitionBtn = document.getElementById('startRecognitionBtn');
+            const recordingIndicator = document.getElementById('recordingIndicator');
+            const recognitionControls = document.getElementById('recognitionControls');
+            const difficultyTag = document.getElementById('difficultyTag');
+            const abbreviationMeaning = document.getElementById('abbreviationMeaning');
+            const meaningText = document.getElementById('meaningText');
+            const wordMeaning = document.getElementById('wordMeaning');
+            const wordChinese = document.getElementById('wordChinese');
+            const wordPhonetic = document.getElementById('wordPhonetic');
+            const sentenceTranslation = document.getElementById('sentenceTranslation');
+            const sentenceChinese = document.getElementById('sentenceChinese');
+            const challengeHint = document.getElementById('challengeHint');
+            const readModeToggle = document.getElementById('readModeToggle');
+            const challengeToggle = document.getElementById('challengeToggle');
+            const challengeToggleContainer = document.getElementById('challengeToggleContainer');
+            const quickFeedback = document.getElementById('quickFeedback');
+            const correctSound = document.getElementById('correctSound');
+            const incorrectSound = document.getElementById('incorrectSound');
+            const studyModeBtn = document.getElementById('studyModeBtn');
+            const currentStudyMode = document.getElementById('currentStudyMode');
+            const handwritingSection = document.getElementById('handwritingSection');
+            const handwritingImage = document.getElementById('handwritingImage');
+            const unitSelector = document.getElementById('unitSelector');
+            const unitSelect = document.getElementById('unitSelect');
+            
+            const letterBtn = document.getElementById('letterBtn');
+            const wordBtn = document.getElementById('wordBtn');
+            const sentenceBtn = document.getElementById('sentenceBtn');
+            
+            const totalDrawsElement = document.getElementById('totalDraws');
+            const correctPronunciationsElement = document.getElementById('correctPronunciations');
+            const currentIndexElement = document.getElementById('currentIndex');
+            const accuracyRateElement = document.getElementById('accuracyRate');
+            const totalLabel = document.getElementById('totalLabel');
+            const correctLabel = document.getElementById('correctLabel');
+
+            // 自定义 tooltip 元素
+            const keyboardHint = document.getElementById('keyboardHint');
+            const keyboardTooltip = document.getElementById('keyboardTooltip');
+
+            // ---------- 数据 ----------
+            // 字母
+            const uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
+
+            // 缩写 (挑战模式)
+            const abbreviations = [
+                {abbr: "UN", meaning: "联合国"},
+                {abbr: "ATM", meaning: "自动取款机"},
+                {abbr: "CPU", meaning: "中央处理器"},
+                {abbr: "DNA", meaning: "脱氧核糖核酸"},
+                {abbr: "BBC", meaning: "英国广播公司"},
+                {abbr: "CNN", meaning: "美国有线电视新闻网"},
+                {abbr: "DIY", meaning: "自己动手做"},
+                {abbr: "FAQ", meaning: "常见问题"},
+                {abbr: "GPS", meaning: "全球定位系统"},
+                {abbr: "ID", meaning: "身份证"},
+                {abbr: "IQ", meaning: "智商"},
+                {abbr: "LCD", meaning: "液晶显示器"},
+                {abbr: "NBA", meaning: "美国职业篮球联赛"},
+                {abbr: "UFO", meaning: "不明飞行物"},
+                {abbr: "USB", meaning: "通用串行总线"},
+                {abbr: "WWW", meaning: "万维网"},
+                {abbr: "ZIP", meaning: "邮政编码"},
+                {abbr: "OK", meaning: "好的"},
+                {abbr: "TV", meaning: "电视"},
+                {abbr: "PC", meaning: "个人电脑"},
+                {abbr: "CD", meaning: "光盘"},
+                {abbr: "DJ", meaning: "唱片骑师"},
+                {abbr: "EQ", meaning: "情商"},
+                {abbr: "FM", meaning: "调频"},
+                {abbr: "VIP", meaning: "贵宾"}
+            ];
+
+            // ---------- 上册词汇 ----------
+            const wordsUpper = [
+                {word: "name", chinese: "名字"},
+                {word: "nice", chinese: "好的"},
+                {word: "ear", chinese: "耳朵"},
+                {word: "hand", chinese: "手"},
+                {word: "eye", chinese: "眼睛"},
+                {word: "mouth", chinese: "嘴巴"},
+                {word: "arm", chinese: "手臂"},
+                {word: "share", chinese: "分享"},
+                {word: "smile", chinese: "微笑"},
+                {word: "listen", chinese: "听"},
+                {word: "help", chinese: "帮助"},
+                {word: "friend", chinese: "朋友"},
+                {word: "mum", chinese: "妈妈"},
+                {word: "dad", chinese: "爸爸"},
+                {word: "grandpa", chinese: "爷爷"},
+                {word: "sister", chinese: "姐妹"},
+                {word: "family", chinese: "家庭"},
+                {word: "have", chinese: "有"},
+                {word: "cousin", chinese: "表亲"},
+                {word: "brother", chinese: "兄弟"},
+                {word: "baby", chinese: "婴儿"},
+                {word: "uncle", chinese: "叔叔"},
+                {word: "aunt", chinese: "阿姨"},
+                {word: "like", chinese: "喜欢"},
+                {word: "dog", chinese: "狗"},
+                {word: "pet", chinese: "宠物"},
+                {word: "cat", chinese: "猫"},
+                {word: "fish", chinese: "鱼"},
+                {word: "bird", chinese: "鸟"},
+                {word: "rabbit", chinese: "兔子"},
+                {word: "zoo", chinese: "动物园"},
+                {word: "fox", chinese: "狐狸"},
+                {word: "panda", chinese: "熊猫"},
+                {word: "monkey", chinese: "猴子"},
+                {word: "tiger", chinese: "老虎"},
+                {word: "elephant", chinese: "大象"},
+                {word: "lion", chinese: "狮子"},
+                {word: "giraffe", chinese: "长颈鹿"},
+                {word: "apple", chinese: "苹果"},
+                {word: "banana", chinese: "香蕉"},
+                {word: "farm", chinese: "农场"},
+                {word: "orange", chinese: "橙子/橙色"},
+                {word: "grape", chinese: "葡萄"},
+                {word: "school", chinese: "学校"},
+                {word: "garden", chinese: "花园"},
+                {word: "water", chinese: "水"},
+                {word: "flower", chinese: "花"},
+                {word: "grass", chinese: "草"},
+                {word: "plant", chinese: "植物"},
+                {word: "new", chinese: "新的"},
+                {word: "tree", chinese: "树"},
+                {word: "sun", chinese: "太阳"},
+                {word: "colour", chinese: "颜色"},
+                {word: "green", chinese: "绿色"},
+                {word: "red", chinese: "红色"},
+                {word: "blue", chinese: "蓝色"},
+                {word: "purple", chinese: "紫色"},
+                {word: "brown", chinese: "棕色"},
+                {word: "make", chinese: "制作"},
+                {word: "bear", chinese: "熊"},
+                {word: "yellow", chinese: "黄色"},
+                {word: "duck", chinese: "鸭子"},
+                {word: "sea", chinese: "海洋"},
+                {word: "pink", chinese: "粉色"},
+                {word: "draw", chinese: "画画"},
+                {word: "white", chinese: "白色"},
+                {word: "black", chinese: "黑色"},
+                {word: "old", chinese: "老的"},
+                {word: "year", chinese: "年"},
+                {word: "one", chinese: "一"},
+                {word: "two", chinese: "二"},
+                {word: "three", chinese: "三"},
+                {word: "four", chinese: "四"},
+                {word: "five", chinese: "五"},
+                {word: "six", chinese: "六"},
+                {word: "seven", chinese: "七"},
+                {word: "eight", chinese: "八"},
+                {word: "nine", chinese: "九"},
+                {word: "ten", chinese: "十"},
+                {word: "cut", chinese: "切"},
+                {word: "cake", chinese: "蛋糕"},
+                {word: "that", chinese: "那个"},
+                {word: "this", chinese: "这个"}
+            ];
+
+            // ---------- 上册句子 ----------
+            const sentencesUpper = [
+                {sentence: "My name is ...", chinese: "我的名字是..."},
+                {sentence: "Nice to meet you.", chinese: "很高兴认识你。"},
+                {sentence: "two ears", chinese: "两只耳朵"},
+                {sentence: "two hands", chinese: "两只手"},
+                {sentence: "two eyes", chinese: "两只眼睛"},
+                {sentence: "one mouth", chinese: "一张嘴"},
+                {sentence: "two arms", chinese: "两只手臂"},
+                {sentence: "We can share.", chinese: "我们可以分享。"},
+                {sentence: "I smile.", chinese: "我微笑。"},
+                {sentence: "I listen.", chinese: "我听。"},
+                {sentence: "I help.", chinese: "我帮助。"},
+                {sentence: "This is my friend Chen Jie.", chinese: "这是我的朋友陈杰。"},
+                {sentence: "This is my grandpa.", chinese: "这是我的爷爷。"},
+                {sentence: "Is this your sister?", chinese: "这是你的姐妹吗？"},
+                {sentence: "big family", chinese: "大家庭"},
+                {sentence: "I have a cat.", chinese: "我有一只猫。"},
+                {sentence: "Is this your cousin?", chinese: "这是你的表亲吗？"},
+                {sentence: "Is this your brother?", chinese: "这是你的兄弟吗？"},
+                {sentence: "baby sister", chinese: "婴儿妹妹"},
+                {sentence: "That is my uncle.", chinese: "那是我的叔叔。"},
+                {sentence: "Do you like oranges?", chinese: "你喜欢橙子吗？"},
+                {sentence: "I like my dog.", chinese: "我喜欢我的狗。"},
+                {sentence: "Do you have a pet?", chinese: "你有宠物吗？"},
+                {sentence: "I like cats.", chinese: "我喜欢猫。"},
+                {sentence: "brown birds", chinese: "棕色的鸟"},
+                {sentence: "four rabbits", chinese: "四只兔子"},
+                {sentence: "Let's go to the zoo!", chinese: "我们去动物园吧！"},
+                {sentence: "It's a fox.", chinese: "它是一只狐狸。"},
+                {sentence: "an apple", chinese: "一个苹果"},
+                {sentence: "seven bananas", chinese: "七个香蕉"},
+                {sentence: "I like the farm.", chinese: "我喜欢农场。"},
+                {sentence: "fresh air", chinese: "新鲜空气"},
+                {sentence: "six oranges", chinese: "六个橙子"},
+                {sentence: "I like grapes.", chinese: "我喜欢葡萄。"},
+                {sentence: "school garden", chinese: "学校花园"},
+                {sentence: "water the flowers", chinese: "浇花"},
+                {sentence: "water the grass", chinese: "浇草"},
+                {sentence: "plant new trees", chinese: "种新树"},
+                {sentence: "What colour is it?", chinese: "它是什么颜色？"},
+                {sentence: "What colours do you like?", chinese: "你喜欢什么颜色？"},
+                {sentence: "I like orange", chinese: "我喜欢橙色"},
+                {sentence: "Blue and yellow make green.", chinese: "蓝色和黄色混合成绿色。"},
+                {sentence: "Red and blue make purple.", chinese: "红色和蓝色混合成紫色。"},
+                {sentence: "brown bear", chinese: "棕熊"},
+                {sentence: "yellow duck", chinese: "黄色的鸭子"},
+                {sentence: "How many apples?", chinese: "有多少苹果？"},
+                {sentence: "blue sea", chinese: "蓝色的海"},
+                {sentence: "Here you are.", chinese: "给你。"},
+                {sentence: "How many grapes?", chinese: "有多少葡萄？"},
+                {sentence: "That's seven yuan, please.", chinese: "请付七元。"},
+                {sentence: "Let's go to the shop!", chinese: "我们去商店吧！"},
+                {sentence: "black and white", chinese: "黑色和白色"},
+                {sentence: "How old are you?", chinese: "你多大了？"},
+                {sentence: "It's eight o'clock.", chinese: "现在是八点钟。"},
+                {sentence: "I'm ten years old.", chinese: "我十岁了。"},
+                {sentence: "Nice to meet you too.", chinese: "也很高兴认识你。"},
+                {sentence: "I'm Mike.", chinese: "我是迈克。"},
+                {sentence: "Good morning!", chinese: "早上好！"},
+                {sentence: "Thank you.", chinese: "谢谢你。"},
+                {sentence: "Thanks.", chinese: "谢谢。"},
+                {sentence: "It's OK.", chinese: "没关系。"},
+                {sentence: "Oh no!", chinese: "哦不！"},
+                {sentence: "Hello!", chinese: "你好！"},
+                {sentence: "Hi!", chinese: "嗨！"},
+                {sentence: "Be careful!", chinese: "小心！"},
+                {sentence: "Use again!", chinese: "再次使用！"},
+                {sentence: "Happy birthday!", chinese: "生日快乐！"},
+                {sentence: "What's that?", chinese: "那是什么？"},
+                {sentence: "What's this?", chinese: "这是什么？"}
+            ];
+
+            // ---------- 下册词汇 ----------
+            const wordUnits = [
+                { name: "上册词汇", words: wordsUpper },
+                { name: "下册 Unit 1", words: [
+                    { word: "where", chinese: "哪里" },
+                    { word: "from", chinese: "从...来" },
+                    { word: "about", chinese: "关于" },
+                    { word: "today", chinese: "今天" },
+                    { word: "teacher", chinese: "老师" },
+                    { word: "student", chinese: "学生" },
+                    { word: "after", chinese: "在...之后" },
+                    { word: "who", chinese: "谁" },
+                    { word: "girl", chinese: "女孩" },
+                    { word: "neighbour", chinese: "邻居" },
+                    { word: "boy", chinese: "男孩" },
+                    { word: "woman", chinese: "女人" },
+                    { word: "man", chinese: "男人" },
+                    { word: "Mr", chinese: "先生" },
+                    { word: "classmate", chinese: "同学" },
+                    { word: "he", chinese: "他" },
+                    { word: "also", chinese: "也" },
+                    { word: "English", chinese: "英语" },
+                    { word: "she", chinese: "她" },
+                    { word: "very", chinese: "非常" },
+                    { word: "UK", chinese: "英国" },
+                    { word: "China", chinese: "中国" },
+                    { word: "Canada", chinese: "加拿大" },
+                    { word: "USA", chinese: "美国" }
+                ] },
+                { name: "下册 Unit 2", words: [
+                    { word: "has", chinese: "有" },
+                    { word: "long", chinese: "长的" },
+                    { word: "body", chinese: "身体" },
+                    { word: "short", chinese: "短的" },
+                    { word: "leg", chinese: "腿" },
+                    { word: "right", chinese: "正确的；右边" },
+                    { word: "fat", chinese: "胖的" },
+                    { word: "thin", chinese: "瘦的" },
+                    { word: "slow", chinese: "慢的" },
+                    { word: "love", chinese: "爱" },
+                    { word: "tail", chinese: "尾巴" },
+                    { word: "her", chinese: "她的" },
+                    { word: "gift", chinese: "礼物" },
+                    { word: "picture", chinese: "图片" },
+                    { word: "card", chinese: "卡片" },
+                    { word: "sing", chinese: "唱歌" },
+                    { word: "dance", chinese: "跳舞" },
+                    { word: "talk", chinese: "说话" },
+                    { word: "face", chinese: "脸" },
+                    { word: "all", chinese: "全部" },
+                    { word: "song", chinese: "歌曲" },
+                    { word: "or", chinese: "或者" },
+                    { word: "much", chinese: "许多" }
+                ] },
+                { name: "下册 Unit 3", words: [
+                    { word: "eraser", chinese: "橡皮" },
+                    { word: "find", chinese: "找到" },
+                    { word: "ruler", chinese: "尺子" },
+                    { word: "pen", chinese: "钢笔" },
+                    { word: "pencil", chinese: "铅笔" },
+                    { word: "book", chinese: "书" },
+                    { word: "bag", chinese: "包" },
+                    { word: "paper", chinese: "纸" },
+                    { word: "these", chinese: "这些" },
+                    { word: "see", chinese: "看见" },
+                    { word: "smell", chinese: "闻" },
+                    { word: "taste", chinese: "尝" },
+                    { word: "hear", chinese: "听见" },
+                    { word: "touch", chinese: "触摸" },
+                    { word: "nose", chinese: "鼻子" },
+                    { word: "tongue", chinese: "舌头" },
+                    { word: "class", chinese: "班级" },
+                    { word: "in", chinese: "在...里" },
+                    { word: "computer", chinese: "电脑" },
+                    { word: "learn", chinese: "学习" }
+                ] },
+                { name: "下册 Unit 4", words: [
+                    { word: "breakfast", chinese: "早餐" },
+                    { word: "time", chinese: "时间" },
+                    { word: "bread", chinese: "面包" },
+                    { word: "egg", chinese: "鸡蛋" },
+                    { word: "milk", chinese: "牛奶" },
+                    { word: "noodle", chinese: "面条" },
+                    { word: "juice", chinese: "果汁" },
+                    { word: "rice", chinese: "米饭" },
+                    { word: "meat", chinese: "肉" },
+                    { word: "vegetable", chinese: "蔬菜" },
+                    { word: "healthy", chinese: "健康的" },
+                    { word: "plate", chinese: "盘子" },
+                    { word: "soup", chinese: "汤" },
+                    { word: "fruit", chinese: "水果" },
+                    { word: "colourful", chinese: "色彩鲜艳的" },
+                    { word: "candy", chinese: "糖果" },
+                    { word: "yummy", chinese: "美味的" }
+                ] },
+                { name: "下册 Unit 5", words: [
+                    { word: "boat", chinese: "船" },
+                    { word: "cool", chinese: "酷的" },
+                    { word: "keep", chinese: "保持" },
+                    { word: "at", chinese: "在" },
+                    { word: "home", chinese: "家" },
+                    { word: "ball", chinese: "球" },
+                    { word: "doll", chinese: "洋娃娃" },
+                    { word: "car", chinese: "汽车" },
+                    { word: "on", chinese: "在...上" },
+                    { word: "shelf", chinese: "架子" },
+                    { word: "in", chinese: "在...里" },
+                    { word: "box", chinese: "盒子" },
+                    { word: "cap", chinese: "帽子" },
+                    { word: "map", chinese: "地图" },
+                    { word: "under", chinese: "在...下" },
+                    { word: "still", chinese: "仍然" },
+                    { word: "put", chinese: "放" }
+                ] },
+                { name: "下册 Unit 6", words: [
+                    { word: "fifteen", chinese: "十五" },
+                    { word: "twelve", chinese: "十二" },
+                    { word: "fourteen", chinese: "十四" },
+                    { word: "thirteen", chinese: "十三" },
+                    { word: "eleven", chinese: "十一" },
+                    { word: "twenty", chinese: "二十" },
+                    { word: "seventeen", chinese: "十七" },
+                    { word: "sixteen", chinese: "十六" },
+                    { word: "eighteen", chinese: "十八" },
+                    { word: "nineteen", chinese: "十九" },
+                    { word: "piggy bank", chinese: "存钱罐" },
+                    { word: "pay", chinese: "支付" },
+                    { word: "back", chinese: "回来；背部" }
+                ] }
+            ];
+            const allWords = wordsUpper.concat(
+                wordUnits[1].words, wordUnits[2].words, wordUnits[3].words,
+                wordUnits[4].words, wordUnits[5].words, wordUnits[6].words
+            );
+            wordUnits.push({ name: "全部单元", words: allWords });
+
+            // ---------- 下册句子 ----------
+            const sentenceUnits = [
+                { name: "上册句子", sentences: sentencesUpper },
+                { name: "下册 Unit 1", sentences: [
+                    { sentence: "What's your name?", chinese: "你的名字是什么？" },
+                    { sentence: "My name's Amy Green.", chinese: "我的名字是艾米·格林。" },
+                    { sentence: "Where are you from?", chinese: "你来自哪里？" },
+                    { sentence: "I'm from China.", chinese: "我来自中国。" },
+                    { sentence: "I'm from UK.", chinese: "我来自英国。" },
+                    { sentence: "I'm from USA.", chinese: "我来自美国。" },
+                    { sentence: "Thank you.", chinese: "谢谢。" },
+                    { sentence: "You're welcome.", chinese: "不客气。" },
+                    { sentence: "After you.", chinese: "您先请。" },
+                    { sentence: "Who's that girl?", chinese: "那个女孩是谁？" },
+                    { sentence: "Let me help.", chinese: "让我来帮忙。" },
+                    { sentence: "That's our new neighbour Amy.", chinese: "那是我们的新邻居艾米。" }
+                ] }
+            ];
+            const allSentences = sentencesUpper.concat(sentenceUnits[1].sentences);
+            sentenceUnits.push({ name: "全部单元", sentences: allSentences });
+
+            // ---------- 手写体图片映射 ----------
+            const handwritingImages = {
+                'A': 'handwriting/A.png', 'a': 'handwriting/a.png',
+                'B': 'handwriting/B.png', 'b': 'handwriting/b.png',
+                'C': 'handwriting/C.png', 'c': 'handwriting/c.png',
+                'D': 'handwriting/D.png', 'd': 'handwriting/d.png',
+                'E': 'handwriting/E.png', 'e': 'handwriting/e.png',
+                'F': 'handwriting/F.png', 'f': 'handwriting/f.png',
+                'G': 'handwriting/G.png', 'g': 'handwriting/g.png',
+                'H': 'handwriting/H.png', 'h': 'handwriting/h.png',
+                'I': 'handwriting/I.png', 'i': 'handwriting/i.png',
+                'J': 'handwriting/J.png', 'j': 'handwriting/j.png',
+                'K': 'handwriting/K.png', 'k': 'handwriting/k.png',
+                'L': 'handwriting/L.png', 'l': 'handwriting/l.png',
+                'M': 'handwriting/M.png', 'm': 'handwriting/m.png',
+                'N': 'handwriting/N.png', 'n': 'handwriting/n.png',
+                'O': 'handwriting/O.png', 'o': 'handwriting/o.png',
+                'P': 'handwriting/P.png', 'p': 'handwriting/p.png',
+                'Q': 'handwriting/Q.png', 'q': 'handwriting/q.png',
+                'R': 'handwriting/R.png', 'r': 'handwriting/r.png',
+                'S': 'handwriting/S.png', 's': 'handwriting/s.png',
+                'T': 'handwriting/T.png', 't': 'handwriting/t.png',
+                'U': 'handwriting/U.png', 'u': 'handwriting/u.png',
+                'V': 'handwriting/V.png', 'v': 'handwriting/v.png',
+                'W': 'handwriting/W.png', 'w': 'handwriting/w.png',
+                'X': 'handwriting/X.png', 'x': 'handwriting/x.png',
+                'Y': 'handwriting/Y.png', 'y': 'handwriting/y.png',
+                'Z': 'handwriting/Z.png', 'z': 'handwriting/z.png'
+            };
+
+            // ---------- 全局变量 ----------
+            let currentContentType = 'letter';
+            let currentContentData = { content: 'A', isUppercase: true, type: 'single' };
+            let isReadMode = false;
+            let isChallengeMode = false;
+            let isStudyMode = false;
+            let recognitionActive = false; // 是否正在录音
+            let speechSynthesis = window.speechSynthesis;
+
+            let stats = {
+                letter: { totalDraws: 0, correctPronunciations: 0, currentIndex: 0 },
+                word: { totalDraws: 0, correctPronunciations: 0, currentIndex: 0 },
+                sentence: { totalDraws: 0, correctPronunciations: 0, currentIndex: 0 }
+            };
+
+            let history = [];
+
+            // ---------- 自定义 tooltip ----------
+            function showTooltip() { keyboardTooltip.classList.add('show'); }
+            function hideTooltip() { keyboardTooltip.classList.remove('show'); }
+            if (keyboardHint) {
+                keyboardHint.addEventListener('mouseenter', showTooltip);
+                keyboardHint.addEventListener('mouseleave', hideTooltip);
+                keyboardHint.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    keyboardTooltip.classList.toggle('show');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!keyboardHint.contains(e.target) && !keyboardTooltip.contains(e.target)) {
+                        hideTooltip();
+                    }
+                });
+            }
+
+            // ---------- 通用函数 ----------
+            function showQuickFeedback(isCorrect, message) {
+                quickFeedback.textContent = message;
+                quickFeedback.className = 'quick-feedback ' + (isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+                quickFeedback.style.display = 'block';
+                setTimeout(() => quickFeedback.style.display = 'none', 2500);
+            }
+
+            function toggleReadMode() {
+                isReadMode = !isReadMode;
+                if (isReadMode) {
+                    recognitionResult.classList.add('recognition-active');
+                    recognitionControls.style.display = 'block';
+                    resetRecognitionResult();
+                } else {
+                    recognitionResult.classList.remove('recognition-active');
+                    recognitionControls.style.display = 'none';
+                    if (recognitionActive) stopRecording();
+                }
+            }
+
+            function toggleChallengeMode() {
+                isChallengeMode = !isChallengeMode;
+                if (isChallengeMode) {
+                    challengeToggle.classList.add('active');
+                    difficultyTag.textContent = 'Level 2';
+                } else {
+                    challengeToggle.classList.remove('active');
+                    difficultyTag.textContent = 'Level 1';
+                }
+                drawContent();
+            }
+
+            function toggleStudyMode() {
+                isStudyMode = !isStudyMode;
+                if (isStudyMode) {
+                    studyModeBtn.innerHTML = '<i class="fas fa-sort-amount-down"></i> 切换为抽读模式';
+                    currentStudyMode.textContent = '顺序模式';
+                    studyModeBtn.classList.remove('btn-mode-toggle');
+                    studyModeBtn.classList.add('btn-secondary');
+                    stats[currentContentType].currentIndex = 0;
+                } else {
+                    studyModeBtn.innerHTML = '<i class="fas fa-random"></i> 切换为顺序认读模式';
+                    currentStudyMode.textContent = '抽读模式';
+                    studyModeBtn.classList.remove('btn-secondary');
+                    studyModeBtn.classList.add('btn-mode-toggle');
+                }
+                drawContent();
+            }
+
+            function resetRecognitionResult() {
+                resultStatus.textContent = '准备开始认读';
+                resultStatus.className = 'result-status result-waiting';
+                if (isChallengeMode && currentContentData.type === 'abbreviation') {
+                    resultText.textContent = `请点击"开始认读"按钮，然后大声读出缩写"${currentContentData.content}"的每个字母。`;
+                } else if (currentContentData.type === 'word') {
+                    resultText.textContent = `请点击"开始认读"按钮，然后大声读出单词"${currentContentData.content}"。`;
+                } else if (currentContentData.type === 'sentence') {
+                    resultText.textContent = `请点击"开始认读"按钮，然后大声读出句子"${currentContentData.content}"。`;
+                } else {
+                    resultText.textContent = '请点击"开始认读"按钮，然后大声读出屏幕上显示的字母。';
+                }
+                startRecognitionBtn.innerHTML = '<i class="fas fa-microphone"></i> 开始认读';
+                recordingIndicator.style.display = 'none';
+                recognitionActive = false;
+            }
+
+            // ---------- 录音相关 ----------
+            let mediaRecorder;
+            let audioChunks = [];
+
+            function startRecording() {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(stream => {
+                        mediaRecorder = new MediaRecorder(stream);
+                        audioChunks = [];
+
+                        mediaRecorder.ondataavailable = event => {
+                            audioChunks.push(event.data);
+                        };
+
+                        mediaRecorder.onstop = async () => {
+                            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                            // 将 webm 转换为 wav (16k, mono)
+                            const wavBase64 = await convertToWavBase64(audioBlob);
+
+                            // 调用后端API
+                            resultStatus.textContent = '正在识别...';
+                            try {
+                                const response = await fetch('https://3x-iota.vercel.app/api/speech', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ audioBase64: wavBase64 })
+                                });
+                                const data = await response.json();
+                                if (response.ok) {
+                                    handleRecognitionResult(data.result.toUpperCase());
+                                } else {
+                                    showQuickFeedback(false, '识别失败：' + data.error);
+                                    resetRecognitionResult();
+                                }
+                            } catch (error) {
+                                showQuickFeedback(false, '网络错误，请重试');
+                                resetRecognitionResult();
+                            } finally {
+                                stream.getTracks().forEach(track => track.stop());
+                            }
+                        };
+
+                        mediaRecorder.start();
+                        recognitionActive = true;
+                        startRecognitionBtn.innerHTML = '<i class="fas fa-microphone-slash"></i> 停止录音';
+                        recordingIndicator.style.display = 'flex';
+                        resultStatus.textContent = '请读出内容...';
+                    })
+                    .catch(err => {
+                        showQuickFeedback(false, '无法访问麦克风，请检查权限');
+                    });
+            }
+
+            function stopRecording() {
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                }
+                recognitionActive = false;
+                startRecognitionBtn.innerHTML = '<i class="fas fa-microphone"></i> 开始认读';
+                recordingIndicator.style.display = 'none';
+            }
+
+            // 将 webm blob 转换为 16k 单声道 wav 的 base64（使用 AudioContext 和 WavEncoder）
+            async function convertToWavBase64(blob) {
+                const arrayBuffer = await blob.arrayBuffer();
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                
+                // 重采样到16000，单声道
+                const targetSampleRate = 16000;
+                const offlineContext = new OfflineAudioContext(1, audioBuffer.duration * targetSampleRate, targetSampleRate);
+                const source = offlineContext.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(offlineContext.destination);
+                source.start();
+                const renderedBuffer = await offlineContext.startRendering();
+
+                // 获取PCM数据 (Float32)
+                const channelData = renderedBuffer.getChannelData(0);
+                const pcm16 = new Int16Array(channelData.length);
+                for (let i = 0; i < channelData.length; i++) {
+                    const s = Math.max(-1, Math.min(1, channelData[i]));
+                    pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                }
+
+                // 使用 wavefile 库构建 wav 文件
+                const wav = new WaveFile();
+                wav.fromScratch(1, targetSampleRate, '16', pcm16);
+                return wav.toBase64();
+            }
+
+            // ---------- 处理识别结果 ----------
+            function handleRecognitionResult(transcript) {
+                const target = currentContentData.content.toUpperCase();
+                let isCorrect = false;
+                let feedbackMessage = '';
+
+                if (currentContentData.type === 'abbreviation') {
+                    const cleanTranscript = transcript.replace(/[^A-Z]/g, '');
+                    if (cleanTranscript === target) {
+                        isCorrect = true;
+                        feedbackMessage = `✓ 哇！你太厉害了！正确读出了缩写 "${target}"！`;
+                        stats.letter.correctPronunciations++;
+                    } else {
+                        feedbackMessage = `✗ 差一点！你读的是"${cleanTranscript || transcript}"，应该是"${target}"。再试试看！`;
+                    }
+                } else if (currentContentData.type === 'word') {
+                    const cleanTranscript = transcript.replace(/[^A-Z\s]/g, '').toLowerCase();
+                    const targetLower = target.toLowerCase();
+                    if (cleanTranscript === targetLower || cleanTranscript.includes(targetLower)) {
+                        isCorrect = true;
+                        feedbackMessage = `✓ 太棒了！你读对了单词 "${target}"！`;
+                        stats.word.correctPronunciations++;
+                    } else {
+                        feedbackMessage = `✗ 不对哦，你读的是"${cleanTranscript}"，应该是"${targetLower}"。再试试看！`;
+                    }
+                } else if (currentContentData.type === 'sentence') {
+                    const cleanTranscript = transcript.toLowerCase();
+                    const targetLower = target.toLowerCase();
+                    const targetWords = targetLower.split(' ');
+                    const transcriptWords = cleanTranscript.split(' ');
+                    let matchedWords = 0;
+                    for (let i = 0; i < targetWords.length; i++) {
+                        if (transcriptWords.includes(targetWords[i]) || cleanTranscript.includes(targetWords[i])) {
+                            matchedWords++;
+                        }
+                    }
+                    if (cleanTranscript === targetLower || matchedWords >= targetWords.length * 0.5) {
+                        isCorrect = true;
+                        feedbackMessage = `✓ 太棒了！你读对了句子 "${target}"！`;
+                        stats.sentence.correctPronunciations++;
+                    } else {
+                        feedbackMessage = `✗ 接近了！你读的是"${transcript}"，应该是"${target}"。再试试看！`;
+                    }
+                } else {
+                    if (transcript.includes(target) || transcript === target.toLowerCase()) {
+                        isCorrect = true;
+                        feedbackMessage = `✓ 太棒了！你读对了字母 "${target}"！`;
+                        stats.letter.correctPronunciations++;
+                    } else {
+                        feedbackMessage = `✗ 不对哦，你读的是"${transcript}"，应该是"${target}"。再试试看！`;
+                    }
+                }
+
+                showQuickFeedback(isCorrect, feedbackMessage);
+
+                if (isCorrect) {
+                    correctSound.currentTime = 0;
+                    correctSound.play().catch(() => {});
+                } else {
+                    incorrectSound.currentTime = 0;
+                    incorrectSound.play().catch(() => {});
+                }
+
+                resetRecognitionResult();
+                updateStats();
+
+                if (isCorrect && isStudyMode) {
+                    setTimeout(() => drawNextInOrder(), 2000);
+                }
+            }
+
+            // ---------- 语音合成 ----------
+            function speakContent() {
+                if (!speechSynthesis) {
+                    alert('您的浏览器不支持语音合成功能');
+                    return;
+                }
+                const textToSpeak = currentContentData.content;
+                let utterance;
+                if (currentContentData.type === 'abbreviation') {
+                    const letters = textToSpeak.split('');
+                    utterance = new SpeechSynthesisUtterance(letters.join(' '));
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.8;
+                } else if (currentContentData.type === 'word') {
+                    utterance = new SpeechSynthesisUtterance(textToSpeak);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.7;
+                } else if (currentContentData.type === 'sentence') {
+                    utterance = new SpeechSynthesisUtterance(textToSpeak);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.8;
+                } else {
+                    utterance = new SpeechSynthesisUtterance(textToSpeak);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.7;
+                }
+                speakContentBtn.classList.add('pulse');
+                setTimeout(() => speakContentBtn.classList.remove('pulse'), 500);
+                speechSynthesis.cancel();
+                setTimeout(() => speechSynthesis.speak(utterance), 50);
+            }
+
+            function adjustFontSize() {
+                const content = currentContent.textContent;
+                const type = currentContentData.type;
+                let baseSize = 18;
+                if (type === 'word') {
+                    const len = content.length;
+                    if (len <= 4) baseSize = 8;
+                    else if (len <= 6) baseSize = 7;
+                    else if (len <= 8) baseSize = 6;
+                    else if (len <= 10) baseSize = 5;
+                    else baseSize = 4;
+                } else if (type === 'sentence') {
+                    const len = content.length;
+                    if (len <= 10) baseSize = 4;
+                    else if (len <= 20) baseSize = 3;
+                    else if (len <= 30) baseSize = 2.5;
+                    else baseSize = 2;
+                } else if (type === 'abbreviation') {
+                    baseSize = 7;
+                } else {
+                    baseSize = 18;
+                }
+                currentContent.style.fontSize = baseSize + 'rem';
+            }
+
+            function setHandwritingImage(letter) {
+                if (handwritingImages[letter]) {
+                    handwritingImage.src = handwritingImages[letter];
+                    handwritingImage.onload = function() {
+                        handwritingImage.style.display = 'block';
+                    };
+                    handwritingImage.onerror = function() {
+                        handwritingImage.src = '26字母表手写体.jpg';
+                        handwritingImage.onerror = function() {
+                            this.style.display = 'none';
+                        };
+                    };
+                } else {
+                    handwritingImage.src = '26字母表手写体.jpg';
+                }
+            }
+
+            function switchContentType(type) {
+                currentContentType = type;
+                letterBtn.classList.remove('active');
+                wordBtn.classList.remove('active');
+                sentenceBtn.classList.remove('active');
+                if (type === 'letter') {
+                    letterBtn.classList.add('active');
+                    challengeToggleContainer.style.display = 'block';
+                    handwritingSection.style.display = 'block';
+                    unitSelector.style.display = 'none';
+                    if (isChallengeMode) {
+                        difficultyTag.textContent = 'Level 2';
+                    } else {
+                        difficultyTag.textContent = 'Level 1';
+                    }
+                    totalLabel.textContent = '字母练习次数';
+                    correctLabel.textContent = '字母正确次数';
+                } else if (type === 'word') {
+                    wordBtn.classList.add('active');
+                    challengeToggleContainer.style.display = 'none';
+                    handwritingSection.style.display = 'none';
+                    unitSelector.style.display = 'block';
+                    if (isChallengeMode) {
+                        isChallengeMode = false;
+                        challengeToggle.classList.remove('active');
+                    }
+                    difficultyTag.textContent = '单词';
+                    totalLabel.textContent = '单词练习次数';
+                    correctLabel.textContent = '单词正确次数';
+                    populateUnitSelect('word');
+                } else if (type === 'sentence') {
+                    sentenceBtn.classList.add('active');
+                    challengeToggleContainer.style.display = 'none';
+                    handwritingSection.style.display = 'none';
+                    unitSelector.style.display = 'block';
+                    if (isChallengeMode) {
+                        isChallengeMode = false;
+                        challengeToggle.classList.remove('active');
+                    }
+                    difficultyTag.textContent = '句子';
+                    totalLabel.textContent = '句子练习次数';
+                    correctLabel.textContent = '句子正确次数';
+                    populateUnitSelect('sentence');
+                }
+                stats[currentContentType].currentIndex = 0;
+                updateStats();
+                drawContent();
+            }
+
+            function populateUnitSelect(type) {
+                unitSelect.innerHTML = '';
+                let units = type === 'word' ? wordUnits : sentenceUnits;
+                units.forEach((unit, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = unit.name;
+                    unitSelect.appendChild(option);
+                });
+                unitSelect.selectedIndex = 0;
+            }
+
+            function replayFromHistory(item) {
+                currentContentData = {
+                    content: item.content,
+                    isUppercase: item.isUppercase || false,
+                    type: item.type,
+                    chinese: item.chinese || '',
+                    meaning: item.meaning || '',
+                    contentType: item.contentType || currentContentType
+                };
+                updateDisplay();
+                if (isReadMode) resetRecognitionResult();
+                currentContent.classList.add('pulse');
+                setTimeout(() => currentContent.classList.remove('pulse'), 500);
+                showQuickFeedback(true, `重新练习: ${item.content}`);
+            }
+
+            function drawContent() {
+                if (currentContentType === 'letter') {
+                    if (isChallengeMode) {
+                        drawAbbreviation();
+                    } else {
+                        drawLetter();
+                    }
+                } else if (currentContentType === 'word') {
+                    drawWord();
+                } else if (currentContentType === 'sentence') {
+                    drawSentence();
+                }
+            }
+
+            function drawNextInOrder() {
+                if (currentContentType === 'letter') {
+                    if (isChallengeMode) {
+                        const index = stats.letter.currentIndex % abbreviations.length;
+                        const abbr = abbreviations[index];
+                        currentContentData = {
+                            content: abbr.abbr,
+                            isUppercase: true,
+                            type: 'abbreviation',
+                            meaning: abbr.meaning,
+                            contentType: 'letter'
+                        };
+                        stats.letter.currentIndex = (index + 1) % abbreviations.length;
+                        stats.letter.totalDraws++;
+                    } else {
+                        const index = stats.letter.currentIndex % 26;
+                        const isUppercase = Math.floor(stats.letter.currentIndex / 26) % 2 === 0;
+                        const letter = isUppercase ? uppercaseLetters[index] : lowercaseLetters[index];
+                        currentContentData = {
+                            content: letter,
+                            isUppercase: isUppercase,
+                            type: 'single',
+                            contentType: 'letter'
+                        };
+                        stats.letter.currentIndex = (stats.letter.currentIndex + 1) % 52;
+                        stats.letter.totalDraws++;
+                    }
+                } else if (currentContentType === 'word') {
+                    const unitIndex = parseInt(unitSelect.value);
+                    const unit = wordUnits[unitIndex];
+                    if (unit.words.length === 0) return;
+                    const index = stats.word.currentIndex % unit.words.length;
+                    const item = unit.words[index];
+                    currentContentData = {
+                        content: item.word,
+                        isUppercase: false,
+                        type: 'word',
+                        chinese: item.chinese,
+                        phonetic: '',
+                        contentType: 'word'
+                    };
+                    stats.word.currentIndex = (index + 1) % unit.words.length;
+                    stats.word.totalDraws++;
+                } else if (currentContentType === 'sentence') {
+                    const unitIndex = parseInt(unitSelect.value);
+                    const unit = sentenceUnits[unitIndex];
+                    if (!unit || unit.sentences.length === 0) return;
+                    const index = stats.sentence.currentIndex % unit.sentences.length;
+                    const item = unit.sentences[index];
+                    currentContentData = {
+                        content: item.sentence,
+                        isUppercase: false,
+                        type: 'sentence',
+                        chinese: item.chinese,
+                        contentType: 'sentence'
+                    };
+                    stats.sentence.currentIndex = (index + 1) % unit.sentences.length;
+                    stats.sentence.totalDraws++;
+                }
+                history.unshift({
+                    content: currentContentData.content,
+                    isUppercase: currentContentData.isUppercase,
+                    type: currentContentData.type,
+                    chinese: currentContentData.chinese || '',
+                    meaning: currentContentData.meaning || '',
+                    contentType: currentContentType
+                });
+                if (history.length > 20) history.pop();
+                updateDisplay();
+                updateStats();
+                updateHistory();
+                if (isReadMode) resetRecognitionResult();
+                currentContent.classList.add('pulse');
+                setTimeout(() => currentContent.classList.remove('pulse'), 500);
+            }
+
+            function drawLetter() {
+                const isUppercase = Math.random() > 0.5;
+                const letter = isUppercase ? 
+                    uppercaseLetters[Math.floor(Math.random() * 26)] : 
+                    lowercaseLetters[Math.floor(Math.random() * 26)];
+                currentContentData = { content: letter, isUppercase, type: 'single', contentType: 'letter' };
+                stats.letter.totalDraws++;
+                history.unshift({ content: letter, isUppercase, type: 'single', contentType: 'letter' });
+                if (history.length > 20) history.pop();
+                updateDisplay();
+                updateStats();
+                updateHistory();
+                if (isReadMode) resetRecognitionResult();
+                currentContent.classList.add('pulse');
+                setTimeout(() => currentContent.classList.remove('pulse'), 500);
+            }
+
+            function drawAbbreviation() {
+                const randomIndex = Math.floor(Math.random() * abbreviations.length);
+                const abbr = abbreviations[randomIndex];
+                currentContentData = { content: abbr.abbr, isUppercase: true, type: 'abbreviation', meaning: abbr.meaning, contentType: 'letter' };
+                stats.letter.totalDraws++;
+                history.unshift({ content: abbr.abbr, isUppercase: true, type: 'abbreviation', meaning: abbr.meaning, contentType: 'letter' });
+                if (history.length > 20) history.pop();
+                updateDisplay();
+                updateStats();
+                updateHistory();
+                if (isReadMode) resetRecognitionResult();
+                currentContent.classList.add('pulse');
+                setTimeout(() => currentContent.classList.remove('pulse'), 500);
+            }
+
+            function drawWord() {
+                const unitIndex = parseInt(unitSelect.value);
+                const unit = wordUnits[unitIndex];
+                if (unit.words.length === 0) return;
+                const randomIndex = Math.floor(Math.random() * unit.words.length);
+                const item = unit.words[randomIndex];
+                currentContentData = {
+                    content: item.word,
+                    isUppercase: false,
+                    type: 'word',
+                    chinese: item.chinese,
+                    phonetic: '',
+                    contentType: 'word'
+                };
+                stats.word.totalDraws++;
+                history.unshift({
+                    content: item.word,
+                    isUppercase: false,
+                    type: 'word',
+                    chinese: item.chinese,
+                    phonetic: '',
+                    contentType: 'word'
+                });
+                if (history.length > 20) history.pop();
+                updateDisplay();
+                updateStats();
+                updateHistory();
+                if (isReadMode) resetRecognitionResult();
+                currentContent.classList.add('pulse');
+                setTimeout(() => currentContent.classList.remove('pulse'), 500);
+            }
+
+            function drawSentence() {
+                const unitIndex = parseInt(unitSelect.value);
+                const unit = sentenceUnits[unitIndex];
+                if (!unit || unit.sentences.length === 0) return;
+                const randomIndex = Math.floor(Math.random() * unit.sentences.length);
+                const item = unit.sentences[randomIndex];
+                currentContentData = {
+                    content: item.sentence,
+                    isUppercase: false,
+                    type: 'sentence',
+                    chinese: item.chinese,
+                    contentType: 'sentence'
+                };
+                stats.sentence.totalDraws++;
+                history.unshift({
+                    content: item.sentence,
+                    isUppercase: false,
+                    type: 'sentence',
+                    chinese: item.chinese,
+                    contentType: 'sentence'
+                });
+                if (history.length > 20) history.pop();
+                updateDisplay();
+                updateStats();
+                updateHistory();
+                if (isReadMode) resetRecognitionResult();
+                currentContent.classList.add('pulse');
+                setTimeout(() => currentContent.classList.remove('pulse'), 500);
+            }
+
+            function updateDisplay() {
+                const { content, isUppercase, type, meaning, chinese } = currentContentData;
+                currentContent.textContent = content;
+                currentContent.className = 'letter-display';
+                if (type === 'abbreviation') {
+                    currentContent.classList.add('abbreviation', 'challenge-color');
+                    contentInfo.textContent = `英文缩写: ${content}`;
+                    abbreviationMeaning.style.display = 'block';
+                    meaningText.textContent = meaning;
+                    wordMeaning.style.display = 'none';
+                    sentenceTranslation.style.display = 'none';
+                    challengeHint.style.display = 'block';
+                    handwritingSection.style.display = 'none';
+                } else if (type === 'word') {
+                    currentContent.classList.add('word', 'word-color');
+                    contentInfo.textContent = `英文单词: ${content}`;
+                    abbreviationMeaning.style.display = 'none';
+                    wordMeaning.style.display = 'block';
+                    wordPhonetic.innerHTML = '';
+                    wordChinese.textContent = chinese || '暂无释义';
+                    sentenceTranslation.style.display = 'none';
+                    challengeHint.style.display = 'none';
+                    handwritingSection.style.display = 'none';
+                } else if (type === 'sentence') {
+                    currentContent.classList.add('sentence', 'sentence-color');
+                    contentInfo.textContent = `英文句子`;
+                    abbreviationMeaning.style.display = 'none';
+                    wordMeaning.style.display = 'none';
+                    sentenceTranslation.style.display = 'block';
+                    sentenceChinese.textContent = chinese || '暂无翻译';
+                    challengeHint.style.display = 'none';
+                    handwritingSection.style.display = 'none';
+                } else {
+                    currentContent.classList.remove('abbreviation', 'word', 'sentence');
+                    currentContent.classList.add(isUppercase ? 'uppercase' : 'lowercase');
+                    contentInfo.textContent = isUppercase ? `大写字母 ${content}` : `小写字母 ${content}`;
+                    abbreviationMeaning.style.display = 'none';
+                    wordMeaning.style.display = 'none';
+                    sentenceTranslation.style.display = 'none';
+                    challengeHint.style.display = 'none';
+                    if (currentContentType === 'letter') {
+                        handwritingSection.style.display = 'block';
+                        setHandwritingImage(content);
+                    }
+                }
+                adjustFontSize();
+            }
+
+            function updateStats() {
+                const currentStats = stats[currentContentType];
+                totalDrawsElement.textContent = currentStats.totalDraws;
+                correctPronunciationsElement.textContent = currentStats.correctPronunciations;
+                currentIndexElement.textContent = currentStats.currentIndex + 1;
+                let accuracy = 0;
+                if (currentStats.totalDraws > 0) {
+                    accuracy = Math.round((currentStats.correctPronunciations / currentStats.totalDraws) * 100);
+                }
+                accuracyRateElement.textContent = accuracy + '%';
+            }
+
+            function updateHistory() {
+                historyList.innerHTML = '';
+                history.forEach(item => {
+                    let el;
+                    if (item.type === 'abbreviation') {
+                        el = document.createElement('div');
+                        el.className = 'history-letter abbreviation-history history-abbreviation';
+                        el.textContent = item.content;
+                        el.title = item.meaning;
+                    } else if (item.type === 'word') {
+                        el = document.createElement('div');
+                        el.className = 'history-word word-history';
+                        el.textContent = item.content;
+                        el.title = item.chinese;
+                    } else if (item.type === 'sentence') {
+                        el = document.createElement('div');
+                        el.className = 'history-sentence sentence-history';
+                        el.textContent = item.content;
+                        el.title = item.chinese;
+                    } else {
+                        el = document.createElement('div');
+                        el.className = `history-letter ${item.isUppercase ? 'uppercase-history' : 'lowercase-history'}`;
+                        el.textContent = item.content;
+                    }
+                    el.addEventListener('click', () => replayFromHistory(item));
+                    historyList.appendChild(el);
+                });
+            }
+
+            // ---------- 事件绑定 ----------
+            drawButton.addEventListener('click', () => {
+                if (isStudyMode) drawNextInOrder(); else drawContent();
+            });
+            recognitionDrawButton.addEventListener('click', () => {
+                if (isStudyMode) drawNextInOrder(); else drawContent();
+            });
+            speakContentBtn.addEventListener('click', speakContent);
+            readModeToggle.addEventListener('change', toggleReadMode);
+            challengeToggle.addEventListener('click', toggleChallengeMode);
+            studyModeBtn.addEventListener('click', toggleStudyMode);
+            startRecognitionBtn.addEventListener('click', () => {
+                if (recognitionActive) {
+                    stopRecording();
+                } else {
+                    startRecording();
+                }
+            });
+
+            letterBtn.addEventListener('click', () => switchContentType('letter'));
+            wordBtn.addEventListener('click', () => switchContentType('word'));
+            sentenceBtn.addEventListener('click', () => switchContentType('sentence'));
+
+            unitSelect.addEventListener('change', () => {
+                stats[currentContentType].currentIndex = 0;
+                drawContent();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    if (isStudyMode) drawNextInOrder(); else drawContent();
+                }
+                if (e.code === 'KeyS') { e.preventDefault(); speakContent(); }
+                if (e.code === 'KeyR') { e.preventDefault(); readModeToggle.checked = !readModeToggle.checked; toggleReadMode(); }
+                if (e.code === 'KeyC' && currentContentType === 'letter') { e.preventDefault(); toggleChallengeMode(); }
+                if (e.code === 'KeyM') { e.preventDefault(); toggleStudyMode(); }
+                if (e.code === 'Digit1') switchContentType('letter');
+                if (e.code === 'Digit2') switchContentType('word');
+                if (e.code === 'Digit3') switchContentType('sentence');
+            });
+
+            // 初始化
+            drawContent();
+        })();
+    </script>
+</body>
+</html>
