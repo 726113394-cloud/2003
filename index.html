@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>英语语音认读系统</title>
+    <title>三年级上册+下册 英语语音认读系统</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -25,7 +25,6 @@
             position: relative;
         }
         
-        /* 添加全局水印 */
         body::after {
             content: "来自太空的小头脑";
             position: fixed;
@@ -137,7 +136,6 @@
             box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
         }
         
-        /* 挑战模式按钮 - 移到右上角 */
         .challenge-toggle-container {
             position: absolute;
             top: 15px;
@@ -189,15 +187,16 @@
             align-items: center;
             justify-content: center;
             font-family: "Times New Roman", Times, serif;
+            max-width: 100%;
+            overflow: hidden;
+            word-break: break-word;
         }
         
         .letter-display.word {
-            font-size: 8rem;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         }
         
         .letter-display.sentence {
-            font-size: 4rem;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.4;
             min-height: 200px;
@@ -205,7 +204,6 @@
         }
         
         .letter-display.abbreviation {
-            font-size: 7rem;
             letter-spacing: 6px;
             font-family: "Times New Roman", Times, serif;
         }
@@ -300,7 +298,6 @@
             margin-right: auto;
         }
         
-        /* 教材来源注释 */
         .textbook-note {
             font-size: 0.8rem;
             margin-top: 5px;
@@ -308,7 +305,6 @@
             font-style: italic;
         }
         
-        /* 手写体图片展示区域 */
         .handwriting-section {
             background-color: white;
             border-radius: 15px;
@@ -317,7 +313,7 @@
             max-width: 1100px;
             margin-top: 15px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-            display: none; /* 默认隐藏，在字母模式下显示 */
+            display: none;
         }
         
         .handwriting-title {
@@ -336,8 +332,8 @@
         }
         
         .handwriting-image {
-            max-width: 300px;
-            max-height: 200px;
+            max-width: 500px;
+            max-height: 300px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
@@ -538,6 +534,36 @@
             transform: translateX(30px);
         }
         
+        .unit-selector {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            text-align: left;
+        }
+        
+        .unit-selector label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .unit-selector select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        .unit-selector select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
         .voice-controls {
             display: flex;
             flex-wrap: wrap;
@@ -609,7 +635,6 @@
             margin-top: 4px;
         }
         
-        /* 认读模式特定样式 */
         .recognition-result {
             background-color: white;
             border-radius: 15px;
@@ -697,7 +722,6 @@
             position: relative;
         }
         
-        /* 添加页脚水印 */
         .watermark {
             position: absolute;
             bottom: 10px;
@@ -842,155 +866,43 @@
         }
         
         @media (max-width: 768px) {
-            h1 {
-                font-size: 1.6rem;
-            }
-            
-            .letter-display {
-                font-size: 12rem;
-                min-height: 180px;
-            }
-            
-            .letter-display.word {
-                font-size: 5rem;
-            }
-            
-            .letter-display.sentence {
-                font-size: 2.5rem;
-                min-height: 150px;
-            }
-            
-            .letter-display.abbreviation {
-                font-size: 5rem;
-                letter-spacing: 4px;
-            }
-            
-            .btn {
-                padding: 15px;
-                font-size: 1.2rem;
-            }
-            
-            .main-content {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .letter-display-section, .controls-section {
-                width: 100%;
-                max-width: 100%;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .challenge-toggle-container {
-                top: 10px;
-                right: 10px;
-            }
-            
-            .challenge-toggle span {
-                font-size: 0.8rem;
-            }
-            
-            .handwriting-container {
-                flex-direction: column;
-            }
-            
-            .handwriting-image {
-                max-width: 250px;
-            }
+            h1 { font-size: 1.6rem; }
+            .letter-display { font-size: 12rem; min-height: 180px; }
+            .btn { padding: 15px; font-size: 1.2rem; }
+            .main-content { flex-direction: column; align-items: center; }
+            .letter-display-section, .controls-section { width: 100%; max-width: 100%; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .challenge-toggle-container { top: 10px; right: 10px; }
+            .challenge-toggle span { font-size: 0.8rem; }
+            .handwriting-container { flex-direction: column; }
+            .handwriting-image { max-width: 100%; }
         }
         
         @media (max-width: 480px) {
-            h1 {
-                font-size: 1.4rem;
-            }
-            
-            .letter-display {
-                font-size: 10rem;
-                min-height: 150px;
-            }
-            
-            .letter-display.word {
-                font-size: 4rem;
-            }
-            
-            .letter-display.sentence {
-                font-size: 2rem;
-                min-height: 120px;
-            }
-            
-            .letter-display.abbreviation {
-                font-size: 4rem;
-                letter-spacing: 3px;
-            }
-            
-            .btn {
-                padding: 12px;
-                font-size: 1.1rem;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .challenge-toggle span {
-                display: none;
-            }
-            
-            .challenge-toggle {
-                padding: 5px 8px;
-            }
-            
-            .handwriting-image {
-                max-width: 200px;
-            }
+            h1 { font-size: 1.4rem; }
+            .letter-display { font-size: 10rem; min-height: 150px; }
+            .btn { padding: 12px; font-size: 1.1rem; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .challenge-toggle span { display: none; }
+            .challenge-toggle { padding: 5px 8px; }
         }
         
-        .pulse {
-            animation: pulse 0.5s ease-in-out;
-        }
-        
-        .challenge-hint {
-            font-size: 1.1rem;
-            margin-top: 12px;
-            color: #7b1fa2;
-            font-style: italic;
-        }
-        
+        .pulse { animation: pulse 0.5s ease-in-out; }
+        .challenge-hint { font-size: 1.1rem; margin-top: 12px; color: #7b1fa2; font-style: italic; }
         .quick-feedback {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            padding: 15px 25px;
-            border-radius: 10px;
-            font-size: 1.4rem;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            animation: fadeInOut 2.5s ease-in-out;
-            display: none;
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 1000; padding: 15px 25px; border-radius: 10px;
+            font-size: 1.4rem; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: fadeInOut 2.5s ease-in-out; display: none;
         }
-        
-        .feedback-correct {
-            background-color: #d5f4e6;
-            color: #27ae60;
-            border: 3px solid #2ecc71;
-        }
-        
-        .feedback-incorrect {
-            background-color: #fadbd8;
-            color: #e74c3c;
-            border: 3px solid #e74c3c;
-        }
+        .feedback-correct { background-color: #d5f4e6; color: #27ae60; border: 3px solid #2ecc71; }
+        .feedback-incorrect { background-color: #fadbd8; color: #e74c3c; border: 3px solid #e74c3c; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-volume-up"></i> 英语语音认读系统</h1>
+            <h1><i class="fas fa-volume-up"></i> 三年级英语语音认读系统（上册+下册）</h1>
             <p class="subtitle">选择认读内容：字母、单词或句子。开启认读模式进行发音练习，开启挑战模式认读英文缩写。</p>
             
             <div class="content-type-selector">
@@ -1009,7 +921,6 @@
         <div class="main-content">
             <section class="letter-display-section">
                 <div class="letter-card">
-                    <!-- 挑战模式按钮 - 移到右上角 -->
                     <div class="challenge-toggle-container" id="challengeToggleContainer" style="display: none;">
                         <div class="challenge-toggle" id="challengeToggle">
                             <i class="fas fa-trophy"></i>
@@ -1026,13 +937,14 @@
                     </div>
                     
                     <div class="word-meaning" id="wordMeaning" style="display: none;">
+                        <span id="wordPhonetic"></span><br>
                         中文：<span id="wordChinese">名字</span>
-                        <div class="textbook-note">选自人教版小学英语PEP教材（2024年改编）</div>
+                        <div class="textbook-note">选自人教版小学英语PEP教材</div>
                     </div>
                     
                     <div class="sentence-translation" id="sentenceTranslation" style="display: none;">
                         中文：<span id="sentenceChinese">我的名字是...</span>
-                        <div class="textbook-note">选自人教版小学英语PEP教材（2024年改编）</div>
+                        <div class="textbook-note">选自人教版小学英语PEP教材</div>
                     </div>
                     
                     <div class="challenge-hint" id="challengeHint" style="display: none;">
@@ -1045,7 +957,6 @@
                         </button>
                     </div>
                     
-                    <!-- 认读模式下的抽签按钮 -->
                     <div class="recognition-controls" id="recognitionControls" style="display: none; margin-top: 15px;">
                         <button class="btn btn-primary" id="recognitionDrawButton">
                             <i class="fas fa-random"></i> 抽取新内容
@@ -1053,7 +964,6 @@
                     </div>
                 </div>
                 
-                <!-- 认读模式结果显示区域 -->
                 <div class="recognition-result" id="recognitionResult">
                     <div class="result-status result-waiting" id="resultStatus">
                         准备开始认读
@@ -1084,6 +994,11 @@
                         <span class="difficulty-tag" id="difficultyTag">Level 1</span>
                     </button>
                     
+                    <div class="unit-selector" id="unitSelector" style="display: none;">
+                        <label for="unitSelect"><i class="fas fa-layer-group"></i> 选择单元：</label>
+                        <select id="unitSelect"></select>
+                    </div>
+                    
                     <div class="mode-controls">
                         <div class="mode-toggle">
                             <div class="toggle-label">
@@ -1097,7 +1012,6 @@
                         </div>
                     </div>
                     
-                    <!-- 新增：顺序/抽读模式切换按钮 -->
                     <button class="btn btn-mode-toggle" id="studyModeBtn">
                         <i class="fas fa-random"></i> 切换为顺序认读模式
                     </button>
@@ -1107,7 +1021,7 @@
                             <i class="fas fa-info-circle"></i> 当前模式：<span id="currentStudyMode">抽读模式</span>
                         </p>
                         <p style="color: #7f8c8d; font-size: 0.8rem;">
-                            顺序模式：按字母表/列表顺序学习
+                            顺序模式：按单元顺序学习
                         </p>
                     </div>
                 </div>
@@ -1136,11 +1050,10 @@
             </section>
         </div>
         
-        <!-- 手写体图片展示区域 -->
         <div class="handwriting-section" id="handwritingSection">
             <h3 class="handwriting-title">英语字母手写体示例</h3>
             <div class="handwriting-container">
-                <img id="handwritingImage" class="handwriting-image" src="" alt="字母手写体图片">
+                <img id="handwritingImage" class="handwriting-image" src="26字母表手写体.jpg" alt="字母手写体" onerror="this.style.display='none'">
                 <div class="handwriting-info">
                     <h3>英语字母手写体书写要点</h3>
                     <p>1. 大写字母占上两格，不顶第一线</p>
@@ -1148,30 +1061,26 @@
                     <p>3. 注意字母的倾斜度，一般向右倾斜约5°</p>
                     <p>4. 字母间保持适当间距，单词内字母紧凑</p>
                     <div class="handwriting-tips">
-                        <p><strong>提示：</strong>点击上方"字母认读"按钮，然后点击"抽取内容"按钮，系统会根据显示的字母自动展示对应的手写体图片。</p>
+                        <p><strong>提示：</strong>将单字母图片（如 A.png, a.png）放在 handwriting 文件夹下可显示对应手写体；若无则显示上方大图。</p>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- 快速反馈提示 -->
         <div class="quick-feedback" id="quickFeedback"></div>
         
         <div class="history-section">
             <h3 class="history-title">最近练习的内容 <span style="font-size: 0.9rem; color: #7f8c8d;">(点击可重新练习)</span></h3>
-            <div class="history-list" id="historyList">
-                <!-- 历史内容将通过JavaScript动态添加 -->
-            </div>
+            <div class="history-list" id="historyList"></div>
         </div>
         
         <footer>
-            <p>英语语音认读系统 &copy; 2023 | 适用于英语字母、单词和句子教学</p>
+            <p>三年级英语语音认读系统（含上册、下册） &copy; 2025 | 适用于三年级学生英语单词和句子认读</p>
             <p>提示：语音识别功能需要浏览器支持，请在Chrome、Edge等现代浏览器中使用</p>
             <div class="watermark">来自太空的小头脑</div>
         </footer>
     </div>
 
-    <!-- 音频元素用于播放音效 -->
     <audio id="correctSound" preload="auto">
         <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
     </audio>
@@ -1180,8 +1089,8 @@
     </audio>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 获取DOM元素
+        (function() {
+            // ---------- DOM 元素 ----------
             const currentContent = document.getElementById('currentContent');
             const contentInfo = document.getElementById('contentInfo');
             const drawButton = document.getElementById('drawButton');
@@ -1199,6 +1108,7 @@
             const meaningText = document.getElementById('meaningText');
             const wordMeaning = document.getElementById('wordMeaning');
             const wordChinese = document.getElementById('wordChinese');
+            const wordPhonetic = document.getElementById('wordPhonetic');
             const sentenceTranslation = document.getElementById('sentenceTranslation');
             const sentenceChinese = document.getElementById('sentenceChinese');
             const challengeHint = document.getElementById('challengeHint');
@@ -1212,25 +1122,26 @@
             const currentStudyMode = document.getElementById('currentStudyMode');
             const handwritingSection = document.getElementById('handwritingSection');
             const handwritingImage = document.getElementById('handwritingImage');
+            const unitSelector = document.getElementById('unitSelector');
+            const unitSelect = document.getElementById('unitSelect');
             
-            // 内容类型选择按钮
             const letterBtn = document.getElementById('letterBtn');
             const wordBtn = document.getElementById('wordBtn');
             const sentenceBtn = document.getElementById('sentenceBtn');
             
-            // 统计元素
             const totalDrawsElement = document.getElementById('totalDraws');
             const correctPronunciationsElement = document.getElementById('correctPronunciations');
             const currentIndexElement = document.getElementById('currentIndex');
             const accuracyRateElement = document.getElementById('accuracyRate');
             const totalLabel = document.getElementById('totalLabel');
             const correctLabel = document.getElementById('correctLabel');
-            
-            // 字母数据
+
+            // ---------- 数据 ----------
+            // 字母
             const uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
-            
-            // Level 2缩写数据
+
+            // 缩写 (挑战模式)
             const abbreviations = [
                 {abbr: "UN", meaning: "联合国"},
                 {abbr: "ATM", meaning: "自动取款机"},
@@ -1258,9 +1169,9 @@
                 {abbr: "FM", meaning: "调频"},
                 {abbr: "VIP", meaning: "贵宾"}
             ];
-            
-            // 单词数据（根据提供的Excel表格）
-            const words = [
+
+            // ---------- 上册词汇 (原 index1) ----------
+            const wordsUpper = [
                 {word: "name", chinese: "名字"},
                 {word: "nice", chinese: "好的"},
                 {word: "ear", chinese: "耳朵"},
@@ -1345,9 +1256,9 @@
                 {word: "that", chinese: "那个"},
                 {word: "this", chinese: "这个"}
             ];
-            
-            // 句子数据（根据提供的Excel表格）
-            const sentences = [
+
+            // ---------- 上册句子 ----------
+            const sentencesUpper = [
                 {sentence: "My name is ...", chinese: "我的名字是..."},
                 {sentence: "Nice to meet you.", chinese: "很高兴认识你。"},
                 {sentence: "two ears", chinese: "两只耳朵"},
@@ -1418,101 +1329,218 @@
                 {sentence: "What's that?", chinese: "那是什么？"},
                 {sentence: "What's this?", chinese: "这是什么？"}
             ];
-			
-            // 手写体图片数据
-            // 假设您的图片命名规则为：大写字母图片名为大写字母，小写字母图片名为小写字母，均为png格式
-            // 并且图片放在handwriting_images文件夹下
+
+            // ---------- 下册词汇 (按单元) ----------
+            const wordUnits = [
+                { name: "上册词汇", words: wordsUpper },
+                { name: "下册 Unit 1", words: [
+                    { word: "where", chinese: "哪里" },
+                    { word: "from", chinese: "从...来" },
+                    { word: "about", chinese: "关于" },
+                    { word: "today", chinese: "今天" },
+                    { word: "teacher", chinese: "老师" },
+                    { word: "student", chinese: "学生" },
+                    { word: "after", chinese: "在...之后" },
+                    { word: "who", chinese: "谁" },
+                    { word: "girl", chinese: "女孩" },
+                    { word: "neighbour", chinese: "邻居" },
+                    { word: "boy", chinese: "男孩" },
+                    { word: "woman", chinese: "女人" },
+                    { word: "man", chinese: "男人" },
+                    { word: "Mr", chinese: "先生" },
+                    { word: "classmate", chinese: "同学" },
+                    { word: "he", chinese: "他" },
+                    { word: "also", chinese: "也" },
+                    { word: "English", chinese: "英语" },
+                    { word: "she", chinese: "她" },
+                    { word: "very", chinese: "非常" },
+                    { word: "UK", chinese: "英国" },
+                    { word: "China", chinese: "中国" },
+                    { word: "Canada", chinese: "加拿大" },
+                    { word: "USA", chinese: "美国" }
+                ] },
+                { name: "下册 Unit 2", words: [
+                    { word: "has", chinese: "有" },
+                    { word: "long", chinese: "长的" },
+                    { word: "body", chinese: "身体" },
+                    { word: "short", chinese: "短的" },
+                    { word: "leg", chinese: "腿" },
+                    { word: "right", chinese: "正确的；右边" },
+                    { word: "fat", chinese: "胖的" },
+                    { word: "thin", chinese: "瘦的" },
+                    { word: "slow", chinese: "慢的" },
+                    { word: "love", chinese: "爱" },
+                    { word: "tail", chinese: "尾巴" },
+                    { word: "her", chinese: "她的" },
+                    { word: "gift", chinese: "礼物" },
+                    { word: "picture", chinese: "图片" },
+                    { word: "card", chinese: "卡片" },
+                    { word: "sing", chinese: "唱歌" },
+                    { word: "dance", chinese: "跳舞" },
+                    { word: "talk", chinese: "说话" },
+                    { word: "face", chinese: "脸" },
+                    { word: "all", chinese: "全部" },
+                    { word: "song", chinese: "歌曲" },
+                    { word: "or", chinese: "或者" },
+                    { word: "much", chinese: "许多" }
+                ] },
+                { name: "下册 Unit 3", words: [
+                    { word: "eraser", chinese: "橡皮" },
+                    { word: "find", chinese: "找到" },
+                    { word: "ruler", chinese: "尺子" },
+                    { word: "pen", chinese: "钢笔" },
+                    { word: "pencil", chinese: "铅笔" },
+                    { word: "book", chinese: "书" },
+                    { word: "bag", chinese: "包" },
+                    { word: "paper", chinese: "纸" },
+                    { word: "these", chinese: "这些" },
+                    { word: "see", chinese: "看见" },
+                    { word: "smell", chinese: "闻" },
+                    { word: "taste", chinese: "尝" },
+                    { word: "hear", chinese: "听见" },
+                    { word: "touch", chinese: "触摸" },
+                    { word: "nose", chinese: "鼻子" },
+                    { word: "tongue", chinese: "舌头" },
+                    { word: "class", chinese: "班级" },
+                    { word: "in", chinese: "在...里" },
+                    { word: "computer", chinese: "电脑" },
+                    { word: "learn", chinese: "学习" }
+                ] },
+                { name: "下册 Unit 4", words: [
+                    { word: "breakfast", chinese: "早餐" },
+                    { word: "time", chinese: "时间" },
+                    { word: "bread", chinese: "面包" },
+                    { word: "egg", chinese: "鸡蛋" },
+                    { word: "milk", chinese: "牛奶" },
+                    { word: "noodle", chinese: "面条" },
+                    { word: "juice", chinese: "果汁" },
+                    { word: "rice", chinese: "米饭" },
+                    { word: "meat", chinese: "肉" },
+                    { word: "vegetable", chinese: "蔬菜" },
+                    { word: "healthy", chinese: "健康的" },
+                    { word: "plate", chinese: "盘子" },
+                    { word: "soup", chinese: "汤" },
+                    { word: "fruit", chinese: "水果" },
+                    { word: "colourful", chinese: "色彩鲜艳的" },
+                    { word: "candy", chinese: "糖果" },
+                    { word: "yummy", chinese: "美味的" }
+                ] },
+                { name: "下册 Unit 5", words: [
+                    { word: "boat", chinese: "船" },
+                    { word: "cool", chinese: "酷的" },
+                    { word: "keep", chinese: "保持" },
+                    { word: "at", chinese: "在" },
+                    { word: "home", chinese: "家" },
+                    { word: "ball", chinese: "球" },
+                    { word: "doll", chinese: "洋娃娃" },
+                    { word: "car", chinese: "汽车" },
+                    { word: "on", chinese: "在...上" },
+                    { word: "shelf", chinese: "架子" },
+                    { word: "in", chinese: "在...里" },
+                    { word: "box", chinese: "盒子" },
+                    { word: "cap", chinese: "帽子" },
+                    { word: "map", chinese: "地图" },
+                    { word: "under", chinese: "在...下" },
+                    { word: "still", chinese: "仍然" },
+                    { word: "put", chinese: "放" }
+                ] },
+                { name: "下册 Unit 6", words: [
+                    { word: "fifteen", chinese: "十五" },
+                    { word: "twelve", chinese: "十二" },
+                    { word: "fourteen", chinese: "十四" },
+                    { word: "thirteen", chinese: "十三" },
+                    { word: "eleven", chinese: "十一" },
+                    { word: "twenty", chinese: "二十" },
+                    { word: "seventeen", chinese: "十七" },
+                    { word: "sixteen", chinese: "十六" },
+                    { word: "eighteen", chinese: "十八" },
+                    { word: "nineteen", chinese: "十九" },
+                    { word: "piggy bank", chinese: "存钱罐" },
+                    { word: "pay", chinese: "支付" },
+                    { word: "back", chinese: "回来；背部" }
+                ] }
+            ];
+
+            // 全部词汇（上册+所有下册）用于“全部单元”
+            const allWords = wordsUpper.concat(
+                wordUnits[1].words, wordUnits[2].words, wordUnits[3].words,
+                wordUnits[4].words, wordUnits[5].words, wordUnits[6].words
+            );
+            wordUnits.push({ name: "全部单元", words: allWords });
+
+            // ---------- 下册句子 (按单元) ----------
+            const sentenceUnits = [
+                { name: "上册句子", sentences: sentencesUpper },
+                { name: "下册 Unit 1", sentences: [
+                    { sentence: "What's your name?", chinese: "你的名字是什么？" },
+                    { sentence: "My name's Amy Green.", chinese: "我的名字是艾米·格林。" },
+                    { sentence: "Where are you from?", chinese: "你来自哪里？" },
+                    { sentence: "I'm from China.", chinese: "我来自中国。" },
+                    { sentence: "I'm from UK.", chinese: "我来自英国。" },
+                    { sentence: "I'm from USA.", chinese: "我来自美国。" },
+                    { sentence: "Thank you.", chinese: "谢谢。" },
+                    { sentence: "You're welcome.", chinese: "不客气。" },
+                    { sentence: "After you.", chinese: "您先请。" },
+                    { sentence: "Who's that girl?", chinese: "那个女孩是谁？" },
+                    { sentence: "Let me help.", chinese: "让我来帮忙。" },
+                    { sentence: "That's our new neighbour Amy.", chinese: "那是我们的新邻居艾米。" }
+                ] }
+            ];
+
+            // 全部句子（上册+下册）
+            const allSentences = sentencesUpper.concat(sentenceUnits[1].sentences);
+            sentenceUnits.push({ name: "全部单元", sentences: allSentences });
+
+            // ---------- 手写体图片映射 ----------
             const handwritingImages = {
-                'A': 'handwriting/A.png',
-                'a': 'handwriting/a_lowercase.png',
-                'B': 'handwriting/B.png',
-                'b': 'handwriting/b_lowercase.png',
-                'C': 'handwriting/C.png',
-                'c': 'handwriting/c_lowercase.png',
-                'D': 'handwriting/D.png',
-                'd': 'handwriting/d_lowercase.png',
-                'E': 'handwriting/E.png',
-                'e': 'handwriting/e_lowercase.png',
-                'F': 'handwriting/F.png',
-                'f': 'handwriting/f_lowercase.png',
-                'G': 'handwriting/G.png',
-                'g': 'handwriting/g_lowercase.png',
-                'H': 'handwriting/H.png',
-                'h': 'handwriting/h_lowercase.png',
-                'I': 'handwriting/I.png',
-                'i': 'handwriting/i_lowercase.png',
-                'J': 'handwriting/J.png',
-                'j': 'handwriting/j_lowercase.png',
-                'K': 'handwriting/K.png',
-                'k': 'handwriting/k_lowercase.png',
-                'L': 'handwriting/L.png',
-                'l': 'handwriting/l_lowercase.png',
-                'M': 'handwriting/M.png',
-                'm': 'handwriting/m_lowercase.png',
-                'N': 'handwriting/N.png',
-                'n': 'handwriting/n_lowercase.png',
-                'O': 'handwriting/O.png',
-                'o': 'handwriting/o_lowercase.png',
-                'P': 'handwriting/P.png',
-                'p': 'handwriting/p_lowercase.png',
-                'Q': 'handwriting/Q.png',
-                'q': 'handwriting/q_lowercase.png',
-                'R': 'handwriting/R.png',
-                'r': 'handwriting/r_lowercase.png',
-                'S': 'handwriting/S.png',
-                's': 'handwriting/s_lowercase.png',
-                'T': 'handwriting/T.png',
-                't': 'handwriting/t_lowercase.png',
-                'U': 'handwriting/U.png',
-                'u': 'handwriting/u_lowercase.png',
-                'V': 'handwriting/V.png',
-                'v': 'handwriting/v_lowercase.png',
-                'W': 'handwriting/W.png',
-                'w': 'handwriting/w_lowercase.png',
-                'X': 'handwriting/X.png',
-                'x': 'handwriting/x_lowercase.png',
-                'Y': 'handwriting/Y.png',
-                'y': 'handwriting/y_lowercase.png',
-                'Z': 'handwriting/Z.png',
-                'z': 'handwriting/z_lowercase.png'
+                'A': 'handwriting/A.png', 'a': 'handwriting/a.png',
+                'B': 'handwriting/B.png', 'b': 'handwriting/b.png',
+                'C': 'handwriting/C.png', 'c': 'handwriting/c.png',
+                'D': 'handwriting/D.png', 'd': 'handwriting/d.png',
+                'E': 'handwriting/E.png', 'e': 'handwriting/e.png',
+                'F': 'handwriting/F.png', 'f': 'handwriting/f.png',
+                'G': 'handwriting/G.png', 'g': 'handwriting/g.png',
+                'H': 'handwriting/H.png', 'h': 'handwriting/h.png',
+                'I': 'handwriting/I.png', 'i': 'handwriting/i.png',
+                'J': 'handwriting/J.png', 'j': 'handwriting/j.png',
+                'K': 'handwriting/K.png', 'k': 'handwriting/k.png',
+                'L': 'handwriting/L.png', 'l': 'handwriting/l.png',
+                'M': 'handwriting/M.png', 'm': 'handwriting/m.png',
+                'N': 'handwriting/N.png', 'n': 'handwriting/n.png',
+                'O': 'handwriting/O.png', 'o': 'handwriting/o.png',
+                'P': 'handwriting/P.png', 'p': 'handwriting/p.png',
+                'Q': 'handwriting/Q.png', 'q': 'handwriting/q.png',
+                'R': 'handwriting/R.png', 'r': 'handwriting/r.png',
+                'S': 'handwriting/S.png', 's': 'handwriting/s.png',
+                'T': 'handwriting/T.png', 't': 'handwriting/t.png',
+                'U': 'handwriting/U.png', 'u': 'handwriting/u.png',
+                'V': 'handwriting/V.png', 'v': 'handwriting/v.png',
+                'W': 'handwriting/W.png', 'w': 'handwriting/w.png',
+                'X': 'handwriting/X.png', 'x': 'handwriting/x.png',
+                'Y': 'handwriting/Y.png', 'y': 'handwriting/y.png',
+                'Z': 'handwriting/Z.png', 'z': 'handwriting/z.png'
             };
-			
-            // 初始化变量
+
+            // ---------- 全局变量 ----------
             let currentContentType = 'letter'; // 'letter', 'word', 'sentence'
             let currentContentData = { content: 'A', isUppercase: true, type: 'single' };
             let isReadMode = false;
             let isChallengeMode = false;
-            let isStudyMode = false; // false: 抽读模式, true: 顺序模式
+            let isStudyMode = false;
             let recognitionActive = false;
             let speechSynthesis = window.speechSynthesis;
             let recognition = null;
-            
-            // 独立统计对象
+
             let stats = {
-                letter: {
-                    totalDraws: 0,
-                    correctPronunciations: 0,
-                    currentIndex: 0
-                },
-                word: {
-                    totalDraws: 0,
-                    correctPronunciations: 0,
-                    currentIndex: 0
-                },
-                sentence: {
-                    totalDraws: 0,
-                    correctPronunciations: 0,
-                    currentIndex: 0
-                }
+                letter: { totalDraws: 0, correctPronunciations: 0, currentIndex: 0 },
+                word: { totalDraws: 0, correctPronunciations: 0, currentIndex: 0 },
+                sentence: { totalDraws: 0, correctPronunciations: 0, currentIndex: 0 }
             };
-            
-            // 历史记录
+
             let history = [];
-            
-            // 检查浏览器是否支持语音识别
+
+            // ---------- 语音识别支持 ----------
             const isSpeechRecognitionSupported = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
-            
-            // 初始化语音识别
             if (isSpeechRecognitionSupported) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 recognition = new SpeechRecognition();
@@ -1521,229 +1549,148 @@
                 recognition.lang = 'en-US';
                 
                 recognition.onstart = function() {
-                    console.log('语音识别已启动');
                     recordingIndicator.style.display = 'flex';
                 };
                 
                 recognition.onresult = function(event) {
                     const transcript = event.results[0][0].transcript.trim().toUpperCase();
-                    console.log('识别结果:', transcript);
-                    
-                    // 获取目标内容
                     const target = currentContentData.content.toUpperCase();
                     
-                    // 检查识别结果
                     let isCorrect = false;
                     let feedbackMessage = '';
                     
                     if (currentContentData.type === 'abbreviation') {
-                        // 缩写模式
-                        // 去掉所有空格和标点
                         const cleanTranscript = transcript.replace(/[^A-Z]/g, '');
-                        
                         if (cleanTranscript === target) {
                             isCorrect = true;
                             feedbackMessage = `✓ 哇！你太厉害了！正确读出了缩写 "${target}"！`;
-                            stats[currentContentType].correctPronunciations++;
+                            stats.letter.correctPronunciations++;
                         } else {
-                            // 检查是否逐个字母读对了
-                            const targetLetters = target.split('');
-                            const transcriptLetters = cleanTranscript.split('');
-                            
-                            let matchedLetters = 0;
-                            for (let i = 0; i < Math.min(targetLetters.length, transcriptLetters.length); i++) {
-                                if (targetLetters[i] === transcriptLetters[i]) {
-                                    matchedLetters++;
-                                }
-                            }
-                            
-                            if (matchedLetters === targetLetters.length && transcriptLetters.length === targetLetters.length) {
-                                isCorrect = true;
-                                feedbackMessage = `✓ 太棒了！你正确读出了缩写 "${target}" 的每一个字母！`;
-                                stats[currentContentType].correctPronunciations++;
-                            } else {
-                                feedbackMessage = `✗ 差一点！你读的是"${cleanTranscript || transcript}"，应该是"${target}"。再试试看！`;
-                            }
+                            feedbackMessage = `✗ 差一点！你读的是"${cleanTranscript || transcript}"，应该是"${target}"。再试试看！`;
                         }
                     } else if (currentContentData.type === 'word') {
-                        // 单词模式
                         const cleanTranscript = transcript.replace(/[^A-Z\s]/g, '').toLowerCase();
                         const targetLower = target.toLowerCase();
-                        
                         if (cleanTranscript === targetLower || cleanTranscript.includes(targetLower)) {
                             isCorrect = true;
                             feedbackMessage = `✓ 太棒了！你读对了单词 "${target}"！`;
-                            stats[currentContentType].correctPronunciations++;
+                            stats.word.correctPronunciations++;
                         } else {
                             feedbackMessage = `✗ 不对哦，你读的是"${cleanTranscript}"，应该是"${targetLower}"。再试试看！`;
                         }
                     } else if (currentContentData.type === 'sentence') {
-                        // 句子模式 - 更宽松的匹配
                         const cleanTranscript = transcript.toLowerCase();
                         const targetLower = target.toLowerCase();
-                        
-                        // 检查是否包含关键单词
                         const targetWords = targetLower.split(' ');
                         const transcriptWords = cleanTranscript.split(' ');
-                        
                         let matchedWords = 0;
                         for (let i = 0; i < targetWords.length; i++) {
-                            if (transcriptWords.includes(targetWords[i]) || 
-                                cleanTranscript.includes(targetWords[i])) {
+                            if (transcriptWords.includes(targetWords[i]) || cleanTranscript.includes(targetWords[i])) {
                                 matchedWords++;
                             }
                         }
-                        
-                        // 如果匹配到至少一半的单词，或者完整句子匹配
                         if (cleanTranscript === targetLower || matchedWords >= targetWords.length * 0.5) {
                             isCorrect = true;
                             feedbackMessage = `✓ 太棒了！你读对了句子 "${target}"！`;
-                            stats[currentContentType].correctPronunciations++;
+                            stats.sentence.correctPronunciations++;
                         } else {
                             feedbackMessage = `✗ 接近了！你读的是"${transcript}"，应该是"${target}"。再试试看！`;
                         }
                     } else {
-                        // 单个字母模式
                         if (transcript.includes(target) || transcript === target.toLowerCase()) {
                             isCorrect = true;
                             feedbackMessage = `✓ 太棒了！你读对了字母 "${target}"！`;
-                            stats[currentContentType].correctPronunciations++;
-                        } else if (transcript.length === 1 && transcript === target) {
-                            isCorrect = true;
-                            feedbackMessage = `✓ 太棒了！你读对了字母 "${target}"！`;
-                            stats[currentContentType].correctPronunciations++;
+                            stats.letter.correctPronunciations++;
                         } else {
                             feedbackMessage = `✗ 不对哦，你读的是"${transcript}"，应该是"${target}"。再试试看！`;
                         }
                     }
                     
-                    // 更新统计
-                    if (isCorrect) {
-                        stats[currentContentType].correctPronunciations++;
-                    }
-                    
-                    // 显示快速反馈
                     showQuickFeedback(isCorrect, feedbackMessage);
                     
-                    // 播放音效
                     if (isCorrect) {
                         correctSound.currentTime = 0;
-                        correctSound.play().catch(e => console.log("音频播放失败:", e));
+                        correctSound.play().catch(() => {});
                     } else {
                         incorrectSound.currentTime = 0;
-                        incorrectSound.play().catch(e => console.log("音频播放失败:", e));
+                        incorrectSound.play().catch(() => {});
                     }
                     
-                    // 重置认读界面
                     resetRecognitionResult();
-                    
-                    // 更新显示和统计
                     updateStats();
                     
-                    // 如果是正确认读且是顺序模式，自动前进到下一个
                     if (isCorrect && isStudyMode) {
-                        setTimeout(() => {
-                            drawNextInOrder();
-                        }, 2000);
+                        setTimeout(() => drawNextInOrder(), 2000);
                     }
                 };
                 
-                recognition.onerror = function(event) {
-                    console.error('语音识别错误:', event.error);
+                recognition.onerror = function() {
                     showQuickFeedback(false, '抱歉，语音识别出现问题。请确保您的麦克风已打开，并重试。');
-                    
-                    // 重置认读界面
                     resetRecognitionResult();
                 };
                 
                 recognition.onend = function() {
-                    console.log('语音识别结束');
                     recordingIndicator.style.display = 'none';
                 };
             } else {
-                // 浏览器不支持语音识别
                 readModeToggle.disabled = true;
                 readModeToggle.parentElement.style.opacity = '0.5';
                 readModeToggle.parentElement.title = "浏览器不支持语音识别";
             }
-            
-            // 显示快速反馈
+
+            // ---------- 通用函数 ----------
             function showQuickFeedback(isCorrect, message) {
                 quickFeedback.textContent = message;
                 quickFeedback.className = 'quick-feedback ' + (isCorrect ? 'feedback-correct' : 'feedback-incorrect');
                 quickFeedback.style.display = 'block';
-                
-                // 2.5秒后自动隐藏
-                setTimeout(() => {
-                    quickFeedback.style.display = 'none';
-                }, 2500);
+                setTimeout(() => quickFeedback.style.display = 'none', 2500);
             }
-            
-            // 切换认读模式
+
             function toggleReadMode() {
                 isReadMode = !isReadMode;
-                
                 if (isReadMode) {
-                    // 进入认读模式
                     recognitionResult.classList.add('recognition-active');
                     recognitionControls.style.display = 'block';
                     resetRecognitionResult();
                 } else {
-                    // 退出认读模式
                     recognitionResult.classList.remove('recognition-active');
                     recognitionControls.style.display = 'none';
                     stopRecognition();
                 }
             }
-            
-            // 切换挑战模式
+
             function toggleChallengeMode() {
                 isChallengeMode = !isChallengeMode;
-                
                 if (isChallengeMode) {
-                    // 进入挑战模式
                     challengeToggle.classList.add('active');
                     difficultyTag.textContent = 'Level 2';
                 } else {
-                    // 退出挑战模式
                     challengeToggle.classList.remove('active');
                     difficultyTag.textContent = 'Level 1';
                 }
-                
-                // 抽取一个新内容
                 drawContent();
             }
-            
-            // 切换学习模式
+
             function toggleStudyMode() {
                 isStudyMode = !isStudyMode;
-                
                 if (isStudyMode) {
-                    // 进入顺序模式
                     studyModeBtn.innerHTML = '<i class="fas fa-sort-amount-down"></i> 切换为抽读模式';
                     currentStudyMode.textContent = '顺序模式';
                     studyModeBtn.classList.remove('btn-mode-toggle');
                     studyModeBtn.classList.add('btn-secondary');
-                    
-                    // 重置当前索引到开始
                     stats[currentContentType].currentIndex = 0;
                 } else {
-                    // 进入抽读模式
                     studyModeBtn.innerHTML = '<i class="fas fa-random"></i> 切换为顺序认读模式';
                     currentStudyMode.textContent = '抽读模式';
                     studyModeBtn.classList.remove('btn-secondary');
                     studyModeBtn.classList.add('btn-mode-toggle');
                 }
-                
-                // 抽取一个新内容
                 drawContent();
             }
-            
-            // 重置认读结果
+
             function resetRecognitionResult() {
                 resultStatus.textContent = '准备开始认读';
                 resultStatus.className = 'result-status result-waiting';
-                
                 if (isChallengeMode && currentContentData.type === 'abbreviation') {
                     resultText.textContent = `请点击"开始认读"按钮，然后大声读出缩写"${currentContentData.content}"的每个字母。`;
                 } else if (currentContentData.type === 'word') {
@@ -1753,20 +1700,16 @@
                 } else {
                     resultText.textContent = '请点击"开始认读"按钮，然后大声读出屏幕上显示的字母。';
                 }
-                
                 startRecognitionBtn.innerHTML = '<i class="fas fa-microphone"></i> 开始认读';
                 recordingIndicator.style.display = 'none';
                 recognitionActive = false;
             }
-            
-            // 开始语音识别
+
             function startRecognition() {
                 if (!isSpeechRecognitionSupported) return;
-                
                 recognitionActive = true;
                 resultStatus.textContent = '请读出内容...';
                 resultStatus.className = 'result-status result-waiting';
-                
                 if (isChallengeMode && currentContentData.type === 'abbreviation') {
                     resultText.textContent = `请大声读出缩写"${currentContentData.content}"的每个字母，比如"U-N"。`;
                 } else if (currentContentData.type === 'word') {
@@ -1776,86 +1719,98 @@
                 } else {
                     resultText.textContent = '请大声读出屏幕上显示的字母。';
                 }
-                
                 startRecognitionBtn.innerHTML = '<i class="fas fa-microphone-slash"></i> 停止认读';
-                
                 try {
                     recognition.start();
-                } catch (error) {
-                    console.error('启动语音识别失败:', error);
-                }
+                } catch (error) {}
             }
-            
-            // 停止语音识别
+
             function stopRecognition() {
                 if (recognition && recognitionActive) {
                     recognitionActive = false;
                     try {
                         recognition.stop();
-                    } catch (error) {
-                        console.error('停止语音识别失败:', error);
-                    }
+                    } catch (error) {}
                 }
             }
-            
-            // 播放发音
+
             function speakContent() {
                 if (!speechSynthesis) {
                     alert('您的浏览器不支持语音合成功能');
                     return;
                 }
-                
                 const textToSpeak = currentContentData.content;
                 let utterance;
-                
                 if (currentContentData.type === 'abbreviation') {
-                    // 对于缩写，逐个字母读，用空格分隔确保清晰
                     const letters = textToSpeak.split('');
                     utterance = new SpeechSynthesisUtterance(letters.join(' '));
                     utterance.lang = 'en-US';
                     utterance.rate = 0.8;
                 } else if (currentContentData.type === 'word') {
-                    // 对于单词，正常朗读
                     utterance = new SpeechSynthesisUtterance(textToSpeak);
                     utterance.lang = 'en-US';
                     utterance.rate = 0.7;
                 } else if (currentContentData.type === 'sentence') {
-                    // 对于句子，正常朗读
                     utterance = new SpeechSynthesisUtterance(textToSpeak);
                     utterance.lang = 'en-US';
                     utterance.rate = 0.8;
                 } else {
-                    // 对于单个字母，直接使用字母本身
                     utterance = new SpeechSynthesisUtterance(textToSpeak);
                     utterance.lang = 'en-US';
                     utterance.rate = 0.7;
                 }
-                
-                // 为按钮添加反馈效果
                 speakContentBtn.classList.add('pulse');
-                setTimeout(() => {
-                    speakContentBtn.classList.remove('pulse');
-                }, 500);
-                
-                // 停止任何正在播放的语音
+                setTimeout(() => speakContentBtn.classList.remove('pulse'), 500);
                 speechSynthesis.cancel();
-                
-                // 设置超时确保语音合成器准备好
-                setTimeout(() => {
-                    speechSynthesis.speak(utterance);
-                }, 50);
-                
-                // 错误处理
-                utterance.onerror = function(event) {
-                    console.error('语音合成错误:', event);
-                };
+                setTimeout(() => speechSynthesis.speak(utterance), 50);
             }
-            
-            // 切换内容类型
+
+            function adjustFontSize() {
+                const content = currentContent.textContent;
+                const type = currentContentData.type;
+                let baseSize = 18;
+                if (type === 'word') {
+                    const len = content.length;
+                    if (len <= 4) baseSize = 8;
+                    else if (len <= 6) baseSize = 7;
+                    else if (len <= 8) baseSize = 6;
+                    else if (len <= 10) baseSize = 5;
+                    else baseSize = 4;
+                } else if (type === 'sentence') {
+                    const len = content.length;
+                    if (len <= 10) baseSize = 4;
+                    else if (len <= 20) baseSize = 3;
+                    else if (len <= 30) baseSize = 2.5;
+                    else baseSize = 2;
+                } else if (type === 'abbreviation') {
+                    baseSize = 7;
+                } else {
+                    baseSize = 18;
+                }
+                currentContent.style.fontSize = baseSize + 'rem';
+            }
+
+            function setHandwritingImage(letter) {
+                // 尝试加载单字母图片，失败则显示默认大图
+                if (handwritingImages[letter]) {
+                    handwritingImage.src = handwritingImages[letter];
+                    handwritingImage.onload = function() {
+                        handwritingImage.style.display = 'block';
+                    };
+                    handwritingImage.onerror = function() {
+                        handwritingImage.src = '26字母表手写体.jpg';
+                        handwritingImage.onerror = function() {
+                            this.style.display = 'none';
+                        };
+                    };
+                } else {
+                    handwritingImage.src = '26字母表手写体.jpg';
+                }
+            }
+
             function switchContentType(type) {
                 currentContentType = type;
                 
-                // 更新按钮状态
                 letterBtn.classList.remove('active');
                 wordBtn.classList.remove('active');
                 sentenceBtn.classList.remove('active');
@@ -1863,60 +1818,61 @@
                 if (type === 'letter') {
                     letterBtn.classList.add('active');
                     challengeToggleContainer.style.display = 'block';
-                    handwritingSection.style.display = 'block'; // 显示手写体图片区域
-                    
-                    // 如果挑战模式开启，显示缩写模式
+                    handwritingSection.style.display = 'block';
+                    unitSelector.style.display = 'none';
                     if (isChallengeMode) {
                         difficultyTag.textContent = 'Level 2';
                     } else {
                         difficultyTag.textContent = 'Level 1';
                     }
-                    
-                    // 更新标签
                     totalLabel.textContent = '字母练习次数';
                     correctLabel.textContent = '字母正确次数';
                 } else if (type === 'word') {
                     wordBtn.classList.add('active');
                     challengeToggleContainer.style.display = 'none';
-                    handwritingSection.style.display = 'none'; // 隐藏手写体图片区域
-                    
-                    // 单词模式下挑战模式关闭
+                    handwritingSection.style.display = 'none';
+                    unitSelector.style.display = 'block';
                     if (isChallengeMode) {
                         isChallengeMode = false;
                         challengeToggle.classList.remove('active');
                     }
                     difficultyTag.textContent = '单词';
-                    
-                    // 更新标签
                     totalLabel.textContent = '单词练习次数';
                     correctLabel.textContent = '单词正确次数';
+                    populateUnitSelect('word');
                 } else if (type === 'sentence') {
                     sentenceBtn.classList.add('active');
                     challengeToggleContainer.style.display = 'none';
-                    handwritingSection.style.display = 'none'; // 隐藏手写体图片区域
-                    
-                    // 句子模式下挑战模式关闭
+                    handwritingSection.style.display = 'none';
+                    unitSelector.style.display = 'block';
                     if (isChallengeMode) {
                         isChallengeMode = false;
                         challengeToggle.classList.remove('active');
                     }
                     difficultyTag.textContent = '句子';
-                    
-                    // 更新标签
                     totalLabel.textContent = '句子练习次数';
                     correctLabel.textContent = '句子正确次数';
+                    populateUnitSelect('sentence');
                 }
                 
-                // 更新统计显示
+                stats[currentContentType].currentIndex = 0;
                 updateStats();
-                
-                // 抽取新内容
                 drawContent();
             }
-            
-            // 从历史记录重新练习
+
+            function populateUnitSelect(type) {
+                unitSelect.innerHTML = '';
+                let units = type === 'word' ? wordUnits : sentenceUnits;
+                units.forEach((unit, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = unit.name;
+                    unitSelect.appendChild(option);
+                });
+                unitSelect.selectedIndex = 0;
+            }
+
             function replayFromHistory(item) {
-                // 设置当前内容
                 currentContentData = {
                     content: item.content,
                     isUppercase: item.isUppercase || false,
@@ -1925,28 +1881,14 @@
                     meaning: item.meaning || '',
                     contentType: item.contentType || currentContentType
                 };
-                
-                // 更新显示
                 updateDisplay();
-                
-                // 重置认读结果
-                if (isReadMode) {
-                    resetRecognitionResult();
-                }
-                
-                // 添加动画效果
+                if (isReadMode) resetRecognitionResult();
                 currentContent.classList.add('pulse');
-                setTimeout(() => {
-                    currentContent.classList.remove('pulse');
-                }, 500);
-                
-                // 显示提示
+                setTimeout(() => currentContent.classList.remove('pulse'), 500);
                 showQuickFeedback(true, `重新练习: ${item.content}`);
             }
-            
-            // 抽取内容函数
+
             function drawContent() {
-                // 根据当前内容类型抽取
                 if (currentContentType === 'letter') {
                     if (isChallengeMode) {
                         drawAbbreviation();
@@ -1959,341 +1901,216 @@
                     drawSentence();
                 }
             }
-            
-            // 顺序模式下抽取下一个内容
+
             function drawNextInOrder() {
-                // 根据当前内容类型和索引获取下一个内容
                 if (currentContentType === 'letter') {
                     if (isChallengeMode) {
-                        // 缩写顺序模式
-                        const index = stats[currentContentType].currentIndex % abbreviations.length;
-                        const abbreviation = abbreviations[index];
-                        
-                        // 更新当前内容
-                        currentContentData = { 
-                            content: abbreviation.abbr, 
-                            isUppercase: true, 
+                        const index = stats.letter.currentIndex % abbreviations.length;
+                        const abbr = abbreviations[index];
+                        currentContentData = {
+                            content: abbr.abbr,
+                            isUppercase: true,
                             type: 'abbreviation',
-                            meaning: abbreviation.meaning,
+                            meaning: abbr.meaning,
                             contentType: 'letter'
                         };
-                        
-                        // 更新索引
-                        stats[currentContentType].currentIndex = (index + 1) % abbreviations.length;
+                        stats.letter.currentIndex = (index + 1) % abbreviations.length;
+                        stats.letter.totalDraws++;
                     } else {
-                        // 字母顺序模式 - 交替大小写
-                        const index = stats[currentContentType].currentIndex % 26;
-                        const isUppercase = Math.floor(stats[currentContentType].currentIndex / 26) % 2 === 0;
-                        const letter = isUppercase ? 
-                            uppercaseLetters[index] : 
-                            lowercaseLetters[index];
-                        
-                        // 更新当前内容
-                        currentContentData = { 
-                            content: letter, 
-                            isUppercase, 
+                        const index = stats.letter.currentIndex % 26;
+                        const isUppercase = Math.floor(stats.letter.currentIndex / 26) % 2 === 0;
+                        const letter = isUppercase ? uppercaseLetters[index] : lowercaseLetters[index];
+                        currentContentData = {
+                            content: letter,
+                            isUppercase: isUppercase,
                             type: 'single',
                             contentType: 'letter'
                         };
-                        
-                        // 更新索引
-                        stats[currentContentType].currentIndex = (stats[currentContentType].currentIndex + 1) % 52;
+                        stats.letter.currentIndex = (stats.letter.currentIndex + 1) % 52;
+                        stats.letter.totalDraws++;
                     }
                 } else if (currentContentType === 'word') {
-                    // 单词顺序模式
-                    const index = stats[currentContentType].currentIndex % words.length;
-                    const word = words[index];
-                    
-                    // 更新当前内容
-                    currentContentData = { 
-                        content: word.word, 
-                        isUppercase: false, 
+                    const unitIndex = parseInt(unitSelect.value);
+                    const unit = wordUnits[unitIndex];
+                    if (unit.words.length === 0) return;
+                    const index = stats.word.currentIndex % unit.words.length;
+                    const item = unit.words[index];
+                    currentContentData = {
+                        content: item.word,
+                        isUppercase: false,
                         type: 'word',
-                        chinese: word.chinese,
+                        chinese: item.chinese,
+                        phonetic: '',
                         contentType: 'word'
                     };
-                    
-                    // 更新索引
-                    stats[currentContentType].currentIndex = (index + 1) % words.length;
+                    stats.word.currentIndex = (index + 1) % unit.words.length;
+                    stats.word.totalDraws++;
                 } else if (currentContentType === 'sentence') {
-                    // 句子顺序模式
-                    const index = stats[currentContentType].currentIndex % sentences.length;
-                    const sentence = sentences[index];
-                    
-                    // 更新当前内容
-                    currentContentData = { 
-                        content: sentence.sentence, 
-                        isUppercase: false, 
+                    const unitIndex = parseInt(unitSelect.value);
+                    const unit = sentenceUnits[unitIndex];
+                    if (!unit || unit.sentences.length === 0) return;
+                    const index = stats.sentence.currentIndex % unit.sentences.length;
+                    const item = unit.sentences[index];
+                    currentContentData = {
+                        content: item.sentence,
+                        isUppercase: false,
                         type: 'sentence',
-                        chinese: sentence.chinese,
+                        chinese: item.chinese,
                         contentType: 'sentence'
                     };
-                    
-                    // 更新索引
-                    stats[currentContentType].currentIndex = (index + 1) % sentences.length;
+                    stats.sentence.currentIndex = (index + 1) % unit.sentences.length;
+                    stats.sentence.totalDraws++;
                 }
                 
-                // 更新统计
-                stats[currentContentType].totalDraws++;
-                
-                // 添加到历史记录
-                history.unshift({ 
-                    content: currentContentData.content, 
-                    isUppercase: currentContentData.isUppercase, 
+                history.unshift({
+                    content: currentContentData.content,
+                    isUppercase: currentContentData.isUppercase,
                     type: currentContentData.type,
                     chinese: currentContentData.chinese || '',
                     meaning: currentContentData.meaning || '',
                     contentType: currentContentType
                 });
-                if (history.length > 20) history.pop(); // 限制历史记录长度
+                if (history.length > 20) history.pop();
                 
-                // 更新显示和统计
                 updateDisplay();
                 updateStats();
                 updateHistory();
                 
-                // 重置认读结果
-                if (isReadMode) {
-                    resetRecognitionResult();
-                }
+                if (isReadMode) resetRecognitionResult();
                 
-                // 添加动画效果
                 currentContent.classList.add('pulse');
-                setTimeout(() => {
-                    currentContent.classList.remove('pulse');
-                }, 500);
+                setTimeout(() => currentContent.classList.remove('pulse'), 500);
             }
-            
-            // 抽取字母函数（随机）
+
             function drawLetter() {
-                // 随机抽取字母
                 const isUppercase = Math.random() > 0.5;
                 const letter = isUppercase ? 
                     uppercaseLetters[Math.floor(Math.random() * 26)] : 
                     lowercaseLetters[Math.floor(Math.random() * 26)];
-                
-                // 更新当前内容
-                currentContentData = { 
-                    content: letter, 
-                    isUppercase, 
-                    type: 'single',
-                    contentType: 'letter'
-                };
-                
-                // 更新统计
-                stats[currentContentType].totalDraws++;
-                
-                // 添加到历史记录
-                history.unshift({ 
-                    content: letter, 
-                    isUppercase, 
-                    type: 'single',
-                    contentType: 'letter'
-                });
-                if (history.length > 20) history.pop(); // 限制历史记录长度
-                
-                // 更新显示和统计
+                currentContentData = { content: letter, isUppercase, type: 'single', contentType: 'letter' };
+                stats.letter.totalDraws++;
+                history.unshift({ content: letter, isUppercase, type: 'single', contentType: 'letter' });
+                if (history.length > 20) history.pop();
                 updateDisplay();
                 updateStats();
                 updateHistory();
-                
-                // 重置认读结果
-                if (isReadMode) {
-                    resetRecognitionResult();
-                }
-                
-                // 添加动画效果
+                if (isReadMode) resetRecognitionResult();
                 currentContent.classList.add('pulse');
-                setTimeout(() => {
-                    currentContent.classList.remove('pulse');
-                }, 500);
+                setTimeout(() => currentContent.classList.remove('pulse'), 500);
             }
-            
-            // 抽取缩写函数（随机）
+
             function drawAbbreviation() {
-                // 随机选择一个缩写
                 const randomIndex = Math.floor(Math.random() * abbreviations.length);
-                const abbreviation = abbreviations[randomIndex];
-                
-                // 更新当前内容
-                currentContentData = { 
-                    content: abbreviation.abbr, 
-                    isUppercase: true, 
-                    type: 'abbreviation',
-                    meaning: abbreviation.meaning,
-                    contentType: 'letter'
-                };
-                
-                // 更新统计
-                stats[currentContentType].totalDraws++;
-                
-                // 添加到历史记录
-                history.unshift({ 
-                    content: abbreviation.abbr, 
-                    isUppercase: true, 
-                    type: 'abbreviation',
-                    meaning: abbreviation.meaning,
-                    contentType: 'letter'
-                });
+                const abbr = abbreviations[randomIndex];
+                currentContentData = { content: abbr.abbr, isUppercase: true, type: 'abbreviation', meaning: abbr.meaning, contentType: 'letter' };
+                stats.letter.totalDraws++;
+                history.unshift({ content: abbr.abbr, isUppercase: true, type: 'abbreviation', meaning: abbr.meaning, contentType: 'letter' });
                 if (history.length > 20) history.pop();
-                
-                // 更新显示和统计
                 updateDisplay();
                 updateStats();
                 updateHistory();
-                
-                // 重置认读结果
-                if (isReadMode) {
-                    resetRecognitionResult();
-                }
-                
-                // 添加动画效果
+                if (isReadMode) resetRecognitionResult();
                 currentContent.classList.add('pulse');
-                setTimeout(() => {
-                    currentContent.classList.remove('pulse');
-                }, 500);
+                setTimeout(() => currentContent.classList.remove('pulse'), 500);
             }
-            
-            // 抽取单词函数（随机）
+
             function drawWord() {
-                // 随机选择一个单词
-                const randomIndex = Math.floor(Math.random() * words.length);
-                const word = words[randomIndex];
-                
-                // 更新当前内容
-                currentContentData = { 
-                    content: word.word, 
-                    isUppercase: false, 
+                const unitIndex = parseInt(unitSelect.value);
+                const unit = wordUnits[unitIndex];
+                if (unit.words.length === 0) return;
+                const randomIndex = Math.floor(Math.random() * unit.words.length);
+                const item = unit.words[randomIndex];
+                currentContentData = {
+                    content: item.word,
+                    isUppercase: false,
                     type: 'word',
-                    chinese: word.chinese,
+                    chinese: item.chinese,
+                    phonetic: '',
                     contentType: 'word'
                 };
-                
-                // 更新统计
-                stats[currentContentType].totalDraws++;
-                
-                // 添加到历史记录
-                history.unshift({ 
-                    content: word.word, 
-                    isUppercase: false, 
+                stats.word.totalDraws++;
+                history.unshift({
+                    content: item.word,
+                    isUppercase: false,
                     type: 'word',
-                    chinese: word.chinese,
+                    chinese: item.chinese,
+                    phonetic: '',
                     contentType: 'word'
                 });
                 if (history.length > 20) history.pop();
-                
-                // 更新显示和统计
                 updateDisplay();
                 updateStats();
                 updateHistory();
-                
-                // 重置认读结果
-                if (isReadMode) {
-                    resetRecognitionResult();
-                }
-                
-                // 添加动画效果
+                if (isReadMode) resetRecognitionResult();
                 currentContent.classList.add('pulse');
-                setTimeout(() => {
-                    currentContent.classList.remove('pulse');
-                }, 500);
+                setTimeout(() => currentContent.classList.remove('pulse'), 500);
             }
-            
-            // 抽取句子函数（随机）
+
             function drawSentence() {
-                // 随机选择一个句子
-                const randomIndex = Math.floor(Math.random() * sentences.length);
-                const sentence = sentences[randomIndex];
-                
-                // 更新当前内容
-                currentContentData = { 
-                    content: sentence.sentence, 
-                    isUppercase: false, 
+                const unitIndex = parseInt(unitSelect.value);
+                const unit = sentenceUnits[unitIndex];
+                if (!unit || unit.sentences.length === 0) return;
+                const randomIndex = Math.floor(Math.random() * unit.sentences.length);
+                const item = unit.sentences[randomIndex];
+                currentContentData = {
+                    content: item.sentence,
+                    isUppercase: false,
                     type: 'sentence',
-                    chinese: sentence.chinese,
+                    chinese: item.chinese,
                     contentType: 'sentence'
                 };
-                
-                // 更新统计
-                stats[currentContentType].totalDraws++;
-                
-                // 添加到历史记录
-                history.unshift({ 
-                    content: sentence.sentence, 
-                    isUppercase: false, 
+                stats.sentence.totalDraws++;
+                history.unshift({
+                    content: item.sentence,
+                    isUppercase: false,
                     type: 'sentence',
-                    chinese: sentence.chinese,
+                    chinese: item.chinese,
                     contentType: 'sentence'
                 });
                 if (history.length > 20) history.pop();
-                
-                // 更新显示和统计
                 updateDisplay();
                 updateStats();
                 updateHistory();
-                
-                // 重置认读结果
-                if (isReadMode) {
-                    resetRecognitionResult();
-                }
-                
-                // 添加动画效果
+                if (isReadMode) resetRecognitionResult();
                 currentContent.classList.add('pulse');
-                setTimeout(() => {
-                    currentContent.classList.remove('pulse');
-                }, 500);
+                setTimeout(() => currentContent.classList.remove('pulse'), 500);
             }
-            
-            // 更新显示
+
             function updateDisplay() {
-                const { content, isUppercase, type, meaning, chinese, contentType } = currentContentData;
-                
+                const { content, isUppercase, type, meaning, chinese } = currentContentData;
                 currentContent.textContent = content;
-                
-                // 设置样式类
                 currentContent.className = 'letter-display';
                 
                 if (type === 'abbreviation') {
-                    currentContent.classList.add('abbreviation');
-                    currentContent.classList.add('challenge-color');
+                    currentContent.classList.add('abbreviation', 'challenge-color');
                     contentInfo.textContent = `英文缩写: ${content}`;
                     abbreviationMeaning.style.display = 'block';
                     meaningText.textContent = meaning;
                     wordMeaning.style.display = 'none';
                     sentenceTranslation.style.display = 'none';
                     challengeHint.style.display = 'block';
-                    
-                    // 隐藏手写体图片
                     handwritingSection.style.display = 'none';
                 } else if (type === 'word') {
-                    currentContent.classList.add('word');
-                    currentContent.classList.add('word-color');
+                    currentContent.classList.add('word', 'word-color');
                     contentInfo.textContent = `英文单词: ${content}`;
                     abbreviationMeaning.style.display = 'none';
                     wordMeaning.style.display = 'block';
-                    wordChinese.textContent = chinese;
+                    wordPhonetic.innerHTML = '';
+                    wordChinese.textContent = chinese || '暂无释义';
                     sentenceTranslation.style.display = 'none';
                     challengeHint.style.display = 'none';
-                    
-                    // 隐藏手写体图片
                     handwritingSection.style.display = 'none';
                 } else if (type === 'sentence') {
-                    currentContent.classList.add('sentence');
-                    currentContent.classList.add('sentence-color');
+                    currentContent.classList.add('sentence', 'sentence-color');
                     contentInfo.textContent = `英文句子`;
                     abbreviationMeaning.style.display = 'none';
                     wordMeaning.style.display = 'none';
                     sentenceTranslation.style.display = 'block';
-                    sentenceChinese.textContent = chinese;
+                    sentenceChinese.textContent = chinese || '暂无翻译';
                     challengeHint.style.display = 'none';
-                    
-                    // 隐藏手写体图片
                     handwritingSection.style.display = 'none';
                 } else {
-                    // 单个字母
-                    currentContent.classList.remove('abbreviation');
-                    currentContent.classList.remove('word');
-                    currentContent.classList.remove('sentence');
+                    currentContent.classList.remove('abbreviation', 'word', 'sentence');
                     currentContent.classList.add(isUppercase ? 'uppercase' : 'lowercase');
                     contentInfo.textContent = isUppercase ? `大写字母 ${content}` : `小写字母 ${content}`;
                     abbreviationMeaning.style.display = 'none';
@@ -2301,203 +2118,98 @@
                     sentenceTranslation.style.display = 'none';
                     challengeHint.style.display = 'none';
                     
-                    // 显示手写体图片
                     if (currentContentType === 'letter') {
                         handwritingSection.style.display = 'block';
-                        // 根据当前字母显示对应的手写体图片
-                        const letter = content;
-                        if (handwritingImages[letter]) {
-                            handwritingImage.src = handwritingImages[letter];
-                            handwritingImage.alt = `${letter} 字母手写体图片`;
-                        } else {
-                            // 如果没有对应图片，显示默认图片
-                            handwritingImage.src = 'https://via.placeholder.com/300x200/cccccc/333333?text=Handwriting+Image';
-                            handwritingImage.alt = '字母手写体图片';
-                        }
+                        setHandwritingImage(content);
                     }
                 }
+                adjustFontSize();
             }
-            
-            // 更新统计信息
+
             function updateStats() {
                 const currentStats = stats[currentContentType];
-                
                 totalDrawsElement.textContent = currentStats.totalDraws;
                 correctPronunciationsElement.textContent = currentStats.correctPronunciations;
                 currentIndexElement.textContent = currentStats.currentIndex + 1;
-                
-                // 计算准确率
                 let accuracy = 0;
                 if (currentStats.totalDraws > 0) {
                     accuracy = Math.round((currentStats.correctPronunciations / currentStats.totalDraws) * 100);
                 }
                 accuracyRateElement.textContent = accuracy + '%';
             }
-            
-            // 更新历史记录
+
             function updateHistory() {
                 historyList.innerHTML = '';
-                
-                history.forEach((item, index) => {
-                    const historyElement = document.createElement('div');
-                    
+                history.forEach(item => {
+                    let el;
                     if (item.type === 'abbreviation') {
-                        historyElement.className = 'history-letter abbreviation-history history-abbreviation';
-                        historyElement.textContent = item.content;
-                        historyElement.title = item.meaning;
+                        el = document.createElement('div');
+                        el.className = 'history-letter abbreviation-history history-abbreviation';
+                        el.textContent = item.content;
+                        el.title = item.meaning;
                     } else if (item.type === 'word') {
-                        historyElement.className = 'history-word word-history';
-                        historyElement.textContent = item.content;
-                        historyElement.title = item.chinese;
+                        el = document.createElement('div');
+                        el.className = 'history-word word-history';
+                        el.textContent = item.content;
+                        el.title = item.chinese;
                     } else if (item.type === 'sentence') {
-                        historyElement.className = 'history-sentence sentence-history';
-                        historyElement.textContent = item.content;
-                        historyElement.title = item.chinese;
+                        el = document.createElement('div');
+                        el.className = 'history-sentence sentence-history';
+                        el.textContent = item.content;
+                        el.title = item.chinese;
                     } else {
-                        // 单个字母
-                        historyElement.className = `history-letter ${item.isUppercase ? 'uppercase-history' : 'lowercase-history'}`;
-                        historyElement.textContent = item.content;
+                        el = document.createElement('div');
+                        el.className = `history-letter ${item.isUppercase ? 'uppercase-history' : 'lowercase-history'}`;
+                        el.textContent = item.content;
                     }
-                    
-                    // 添加点击事件
-                    historyElement.addEventListener('click', function() {
-                        replayFromHistory(item);
-                    });
-                    
-                    historyList.appendChild(historyElement);
+                    el.addEventListener('click', () => replayFromHistory(item));
+                    historyList.appendChild(el);
                 });
             }
-            
-            // 事件监听
-            drawButton.addEventListener('click', function() {
-                if (isStudyMode) {
-                    drawNextInOrder();
-                } else {
-                    drawContent();
-                }
+
+            // ---------- 事件绑定 ----------
+            drawButton.addEventListener('click', () => {
+                if (isStudyMode) drawNextInOrder(); else drawContent();
             });
-            
-            recognitionDrawButton.addEventListener('click', function() {
-                if (isStudyMode) {
-                    drawNextInOrder();
-                } else {
-                    drawContent();
-                }
+            recognitionDrawButton.addEventListener('click', () => {
+                if (isStudyMode) drawNextInOrder(); else drawContent();
             });
-            
             speakContentBtn.addEventListener('click', speakContent);
-            
-            readModeToggle.addEventListener('change', function() {
-                toggleReadMode();
+            readModeToggle.addEventListener('change', toggleReadMode);
+            challengeToggle.addEventListener('click', toggleChallengeMode);
+            studyModeBtn.addEventListener('click', toggleStudyMode);
+            startRecognitionBtn.addEventListener('click', () => {
+                if (recognitionActive) { stopRecognition(); resetRecognitionResult(); }
+                else startRecognition();
             });
             
-            challengeToggle.addEventListener('click', function() {
-                toggleChallengeMode();
-            });
+            letterBtn.addEventListener('click', () => switchContentType('letter'));
+            wordBtn.addEventListener('click', () => switchContentType('word'));
+            sentenceBtn.addEventListener('click', () => switchContentType('sentence'));
             
-            studyModeBtn.addEventListener('click', function() {
-                toggleStudyMode();
+            unitSelect.addEventListener('change', () => {
+                stats[currentContentType].currentIndex = 0;
+                drawContent();
             });
-            
-            startRecognitionBtn.addEventListener('click', function() {
-                if (recognitionActive) {
-                    stopRecognition();
-                    resetRecognitionResult();
-                } else {
-                    startRecognition();
+
+            // 键盘支持
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    if (isStudyMode) drawNextInOrder(); else drawContent();
                 }
+                if (e.code === 'KeyS') { e.preventDefault(); speakContent(); }
+                if (e.code === 'KeyR') { e.preventDefault(); readModeToggle.checked = !readModeToggle.checked; toggleReadMode(); }
+                if (e.code === 'KeyC' && currentContentType === 'letter') { e.preventDefault(); toggleChallengeMode(); }
+                if (e.code === 'KeyM') { e.preventDefault(); toggleStudyMode(); }
+                if (e.code === 'Digit1') switchContentType('letter');
+                if (e.code === 'Digit2') switchContentType('word');
+                if (e.code === 'Digit3') switchContentType('sentence');
             });
-            
-            // 内容类型切换按钮事件
-            letterBtn.addEventListener('click', function() {
-                switchContentType('letter');
-            });
-            
-            wordBtn.addEventListener('click', function() {
-                switchContentType('word');
-            });
-            
-            sentenceBtn.addEventListener('click', function() {
-                switchContentType('sentence');
-            });
-            
-            // 初始抽取一个字母
+
+            // 初始化
             drawContent();
-            
-            // 添加键盘支持
-            document.addEventListener('keydown', function(event) {
-                // 空格键抽取新内容
-                if (event.code === 'Space') {
-                    event.preventDefault();
-                    if (isStudyMode) {
-                        drawNextInOrder();
-                    } else {
-                        drawContent();
-                    }
-                }
-                
-                // S键播放发音
-                if (event.code === 'KeyS') {
-                    event.preventDefault();
-                    speakContent();
-                }
-                
-                // R键切换认读模式
-                if (event.code === 'KeyR') {
-                    event.preventDefault();
-                    readModeToggle.checked = !readModeToggle.checked;
-                    toggleReadMode();
-                }
-                
-                // C键切换挑战模式（仅字母模式）
-                if (event.code === 'KeyC' && currentContentType === 'letter') {
-                    event.preventDefault();
-                    isChallengeMode = !isChallengeMode;
-                    toggleChallengeMode();
-                }
-                
-                // M键切换学习模式
-                if (event.code === 'KeyM') {
-                    event.preventDefault();
-                    toggleStudyMode();
-                }
-                
-                // 1键切换到字母模式
-                if (event.code === 'Digit1') {
-                    event.preventDefault();
-                    switchContentType('letter');
-                }
-                
-                // 2键切换到单词模式
-                if (event.code === 'Digit2') {
-                    event.preventDefault();
-                    switchContentType('word');
-                }
-                
-                // 3键切换到句子模式
-                if (event.code === 'Digit3') {
-                    event.preventDefault();
-                    switchContentType('sentence');
-                }
-            });
-            
-            // 添加触摸设备优化
-            drawButton.addEventListener('touchstart', function() {
-                this.style.transform = 'translateY(-1px)';
-            });
-            
-            drawButton.addEventListener('touchend', function() {
-                this.style.transform = 'translateY(0)';
-            });
-            
-            speakContentBtn.addEventListener('touchstart', function() {
-                this.style.transform = 'translateY(-1px)';
-            });
-            
-            speakContentBtn.addEventListener('touchend', function() {
-                this.style.transform = 'translateY(0)';
-            });
-        });
+        })();
     </script>
 </body>
 </html>
