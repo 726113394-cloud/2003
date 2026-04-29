@@ -6,7 +6,7 @@
     <title>多年级英语语音认读系统</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ========== 完整样式（与之前保持一致，仅水印和选择器初始化调整） ========== */
+        /* ========== 基础样式（PC / 通用） ========== */
         * {
             margin: 0;
             padding: 0;
@@ -37,35 +37,25 @@
             pointer-events: none;
         }
         
-        /* 旧水印已删除，不再显示 body::after 内容 */
-        
-        /* 三角形毛玻璃水印区域（纯装饰，无交互） */
-        .corner-watermark {
+        /* 底部居中横向圆角水印（替代三角形） */
+        .bottom-watermark {
             position: fixed;
-            bottom: 0;
-            right: 0;
-            width: 180px;
-            height: 180px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%);
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(8px);
-            clip-path: polygon(100% 0, 100% 100%, 0 100%);
-            pointer-events: none;
-            z-index: 9998;
-            display: flex;
-            align-items: flex-end;
-            justify-content: flex-end;
-            padding: 0 12px 12px 0;
-        }
-        
-        .corner-watermark span {
+            padding: 6px 18px;
+            border-radius: 40px;
             font-size: 0.75rem;
-            color: rgba(100, 100, 140, 0.6);
-            transform: rotate(-5deg);
-            font-style: italic;
-            background: rgba(255,255,240,0.3);
-            padding: 4px 8px;
-            border-radius: 20px;
-            backdrop-filter: blur(2px);
+            color: rgba(80, 80, 120, 0.7);
+            font-weight: normal;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            z-index: 9999;
+            pointer-events: none;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
         }
         
         .container {
@@ -140,6 +130,7 @@
             transform: translateY(-2px);
         }
         
+        /* PC端左右两列布局 */
         .main-content {
             display: flex;
             flex-wrap: wrap;
@@ -503,26 +494,86 @@
             display: none;
         }
         
+        .click-hint {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 20px;
+        }
+        
+        /* ========== 移动设备专用样式 (宽度 ≤ 768px) ========== */
         @media (max-width: 768px) {
-            body { padding: 20px 16px; }
-            .container { gap: 32px; }
-            .main-content { gap: 32px; }
-            .letter-display-section, .controls-section {
-                flex: 1;
+            body {
+                padding: 20px 16px;
+            }
+            .container {
+                gap: 32px;
+            }
+            /* 改为竖向单列布局 */
+            .main-content {
+                flex-direction: column;
+                gap: 32px;
+            }
+            .letter-display-section,
+            .controls-section {
+                flex: auto;
+                width: 100%;
                 min-width: auto;
             }
-            .letter-card { padding: 32px 20px; min-height: 460px; }
-            .letter-display { fontSize: 9rem; }
-            .controls-card { padding: 24px 20px; }
-            .selector-row { flex-direction: column; align-items: stretch; }
-            .selector-row select { width: 100%; }
-            .history-word { font-size: 1.1rem; padding: 8px 16px; min-width: 80px; }
-            .history-sentence { font-size: 0.85rem; max-width: 200px; white-space: normal; }
-            .stat-value { font-size: 2rem; }
-            .btn { padding: 14px; font-size: 1rem; }
-            .grade-book-selector { padding: 16px; }
-            .corner-watermark { width: 120px; height: 120px; }
-            .corner-watermark span { font-size: 0.6rem; }
+            /* 展示卡片增大内边距，字体自适应 */
+            .letter-card {
+                padding: 40px 20px;
+                min-height: auto;
+            }
+            .letter-display {
+                font-size: 14rem;
+            }
+            .letter-display.word {
+                font-size: 8rem;
+            }
+            .letter-display.sentence {
+                font-size: 3rem;
+            }
+            /* 控制面板内部元素自然排列，选择器调整为纵向 */
+            .controls-card {
+                padding: 24px 20px;
+            }
+            .selector-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .selector-row select {
+                width: 100%;
+            }
+            .grade-book-selector {
+                padding: 16px;
+                margin: 16px 0;
+            }
+            /* 历史记录块适当缩小 */
+            .history-word {
+                font-size: 1.1rem;
+                padding: 8px 16px;
+                min-width: 70px;
+            }
+            .history-sentence {
+                font-size: 0.85rem;
+                max-width: 200px;
+                white-space: normal;
+            }
+            .stat-value {
+                font-size: 2rem;
+            }
+            .btn {
+                padding: 14px;
+                font-size: 1rem;
+            }
+            /* 底部水印在移动端稍微调整 */
+            .bottom-watermark {
+                font-size: 0.7rem;
+                padding: 4px 14px;
+                white-space: nowrap;
+                bottom: 12px;
+            }
         }
         
         .pulse { animation: pulseScale 0.2s ease; }
@@ -530,18 +581,12 @@
             0% { transform: scale(1); }
             50% { transform: scale(1.02); }
         }
-        
-        .click-hint {
-            font-size: 0.75rem;
-            color: #94a3b8;
-            margin-top: 20px;
-        }
     </style>
 </head>
 <body>
-    <!-- 三角形毛玻璃水印装饰（仅保留此水印） -->
-    <div class="corner-watermark">
-        <span>✨ 来自太空的小头脑 ✨</span>
+    <!-- 底部横向圆角水印（取代三角形） -->
+    <div class="bottom-watermark">
+        ✨ 来自太空的小头脑 ✨
     </div>
 
 <div class="container">
@@ -620,7 +665,7 @@
 
     <div class="history-section"><h3 class="history-title">📝 最近练习的内容 <span style="font-size:0.8rem;">(点击可重新练习)</span></h3><div class="history-list" id="historyList"></div></div>
     <div class="quick-feedback" id="quickFeedback"></div>
-    <footer style="text-align: center; margin: 20px 0 10px; color: #64748b;"><p>多年级英语语音认读系统|来自太空的小头脑 © 2025</p></footer>
+    <footer style="text-align: center; margin: 20px 0 10px; color: #64748b;"><p>多年级英语语音认读系统 | @来自太空的小头脑 © 2025</p></footer>
 </div>
 
 <audio id="correctSound" preload="auto"><source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg"></audio>
