@@ -37,7 +37,7 @@
             pointer-events: none;
         }
         
-        /* 底部居中横向圆角水印（替代三角形） */
+        /* 底部横向圆角水印 */
         .bottom-watermark {
             position: fixed;
             bottom: 16px;
@@ -452,6 +452,7 @@
             box-shadow: 0 6px 14px rgba(0,0,0,0.1);
         }
         
+        /* 手写体区域 - 新样式 */
         .handwriting-section {
             padding: 28px;
             display: none;
@@ -466,6 +467,29 @@
         .handwriting-image {
             max-width: 300px;
             border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .handwriting-info {
+            flex: 1;
+            min-width: 260px;
+            background: rgba(255,255,245,0.7);
+            padding: 20px;
+            border-radius: 20px;
+        }
+        .handwriting-info h3 {
+            margin-bottom: 12px;
+            color: #2c3e50;
+        }
+        .handwriting-info p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+        .handwriting-tips {
+            background: #e8f4fc;
+            padding: 12px;
+            border-radius: 16px;
+            margin-top: 12px;
+            border-left: 4px solid #3498db;
         }
         
         .quick-feedback {
@@ -508,7 +532,6 @@
             .container {
                 gap: 32px;
             }
-            /* 改为竖向单列布局 */
             .main-content {
                 flex-direction: column;
                 gap: 32px;
@@ -519,7 +542,6 @@
                 width: 100%;
                 min-width: auto;
             }
-            /* 展示卡片增大内边距，字体自适应 */
             .letter-card {
                 padding: 40px 20px;
                 min-height: auto;
@@ -533,7 +555,6 @@
             .letter-display.sentence {
                 font-size: 3rem;
             }
-            /* 控制面板内部元素自然排列，选择器调整为纵向 */
             .controls-card {
                 padding: 24px 20px;
             }
@@ -549,7 +570,6 @@
                 padding: 16px;
                 margin: 16px 0;
             }
-            /* 历史记录块适当缩小 */
             .history-word {
                 font-size: 1.1rem;
                 padding: 8px 16px;
@@ -567,12 +587,17 @@
                 padding: 14px;
                 font-size: 1rem;
             }
-            /* 底部水印在移动端稍微调整 */
             .bottom-watermark {
                 font-size: 0.7rem;
                 padding: 4px 14px;
                 white-space: nowrap;
                 bottom: 12px;
+            }
+            .handwriting-container {
+                flex-direction: column;
+            }
+            .handwriting-image {
+                max-width: 90%;
             }
         }
         
@@ -584,9 +609,9 @@
     </style>
 </head>
 <body>
-    <!-- 底部横向圆角水印（取代三角形） -->
+    <!-- 底部横向圆角水印 -->
     <div class="bottom-watermark">
-        ✨ 来自太空的小头脑 ✨
+        ✨ @来自太空的小头脑 ✨
     </div>
 
 <div class="container">
@@ -661,11 +686,27 @@
         </section>
     </div>
 
-    <div class="handwriting-section" id="handwritingSection"><h3 class="handwriting-title">✍️ 英语字母手写体示例</h3><div class="handwriting-container"><img id="handwritingImage" class="handwriting-image" src="26字母表手写体.jpg" alt="字母手写体" onerror="this.style.display='none'"><div class="handwriting-info"><h3>书写要点</h3><p>大写占上两格，小写占格不同，向右倾斜5°</p><div class="handwriting-tips">💡 将单字母图片放入 handwriting 文件夹可单独展示</div></div></div></div>
+    <!-- 手写体图片展示区域（新样式） -->
+    <div class="handwriting-section" id="handwritingSection">
+        <h3 class="handwriting-title">英语字母手写体示例</h3>
+        <div class="handwriting-container">
+            <img id="handwritingImage" class="handwriting-image" src="" alt="字母手写体图片">
+            <div class="handwriting-info">
+                <h3>英语字母手写体书写要点</h3>
+                <p>1. 大写字母占上两格，不顶第一线</p>
+                <p>2. 小写字母根据字母形状占格不同</p>
+                <p>3. 注意字母的倾斜度，一般向右倾斜约5°</p>
+                <p>4. 字母间保持适当间距，单词内字母紧凑</p>
+                <div class="handwriting-tips">
+                    <p><strong>提示：</strong>点击上方"字母认读"按钮，然后点击"抽取内容"按钮，系统会根据显示的字母自动展示对应的手写体图片。</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="history-section"><h3 class="history-title">📝 最近练习的内容 <span style="font-size:0.8rem;">(点击可重新练习)</span></h3><div class="history-list" id="historyList"></div></div>
     <div class="quick-feedback" id="quickFeedback"></div>
-    <footer style="text-align: center; margin: 20px 0 10px; color: #64748b;"><p>多年级英语语音认读系统 | @来自太空的小头脑 © 2025</p></footer>
+    <footer style="text-align: center; margin: 20px 0 10px; color: #64748b;"><p>多年级英语语音认读系统 | 长词滚动优化版 © 2025</p></footer>
 </div>
 
 <audio id="correctSound" preload="auto"><source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg"></audio>
@@ -784,20 +825,61 @@
         3: { upper: { "全部单元": sentencesUpperAll }, lower: { "Unit 1": [ { sentence: "What's your name?", chinese: "你的名字是什么？" },{ sentence: "My name's Amy Green.", chinese: "我的名字是艾米·格林。" },{ sentence: "Where are you from?", chinese: "你来自哪里？" },{ sentence: "I'm from China.", chinese: "我来自中国。" },{ sentence: "I'm from UK.", chinese: "我来自英国。" },{ sentence: "I'm from USA.", chinese: "我来自美国。" },{ sentence: "Thank you.", chinese: "谢谢你。" },{ sentence: "You're welcome.", chinese: "不客气。" },{ sentence: "After you.", chinese: "您先请。" },{ sentence: "Who's that girl?", chinese: "那个女孩是谁？" },{ sentence: "Let me help.", chinese: "让我来帮忙。" },{ sentence: "That's our new neighbour Amy.", chinese: "那是我们的新邻居艾米。" } ], "Unit 2": sentencesLowerUnit2, "Unit 3": sentencesLowerUnit3 } },
         4: { upper: {}, lower: {} }, 5: { upper: {}, lower: {} }, 6: { upper: {}, lower: {} }
     };
+
+    // 手写体图片数据（根据用户提供的路径）
     const handwritingImages = {
-        'A':'handwriting/A.png','a':'handwriting/a.png','B':'handwriting/B.png','b':'handwriting/b.png',
-        'C':'handwriting/C.png','c':'handwriting/c.png','D':'handwriting/D.png','d':'handwriting/d.png',
-        'E':'handwriting/E.png','e':'handwriting/e.png','F':'handwriting/F.png','f':'handwriting/f.png',
-        'G':'handwriting/G.png','g':'handwriting/g.png','H':'handwriting/H.png','h':'handwriting/h.png',
-        'I':'handwriting/I.png','i':'handwriting/i.png','J':'handwriting/J.png','j':'handwriting/j.png',
-        'K':'handwriting/K.png','k':'handwriting/k.png','L':'handwriting/L.png','l':'handwriting/l.png',
-        'M':'handwriting/M.png','m':'handwriting/m.png','N':'handwriting/N.png','n':'handwriting/n.png',
-        'O':'handwriting/O.png','o':'handwriting/o.png','P':'handwriting/P.png','p':'handwriting/p.png',
-        'Q':'handwriting/Q.png','q':'handwriting/q.png','R':'handwriting/R.png','r':'handwriting/r.png',
-        'S':'handwriting/S.png','s':'handwriting/s.png','T':'handwriting/T.png','t':'handwriting/t.png',
-        'U':'handwriting/U.png','u':'handwriting/u.png','V':'handwriting/V.png','v':'handwriting/v.png',
-        'W':'handwriting/W.png','w':'handwriting/w.png','X':'handwriting/X.png','x':'handwriting/x.png',
-        'Y':'handwriting/Y.png','y':'handwriting/y.png','Z':'handwriting/Z.png','z':'handwriting/z.png'
+        'A': 'handwriting/A.png',
+        'a': 'handwriting/a_lowercase.png',
+        'B': 'handwriting/B.png',
+        'b': 'handwriting/b_lowercase.png',
+        'C': 'handwriting/C.png',
+        'c': 'handwriting/c_lowercase.png',
+        'D': 'handwriting/D.png',
+        'd': 'handwriting/d_lowercase.png',
+        'E': 'handwriting/E.png',
+        'e': 'handwriting/e_lowercase.png',
+        'F': 'handwriting/F.png',
+        'f': 'handwriting/f_lowercase.png',
+        'G': 'handwriting/G.png',
+        'g': 'handwriting/g_lowercase.png',
+        'H': 'handwriting/H.png',
+        'h': 'handwriting/h_lowercase.png',
+        'I': 'handwriting/I.png',
+        'i': 'handwriting/i_lowercase.png',
+        'J': 'handwriting/J.png',
+        'j': 'handwriting/j_lowercase.png',
+        'K': 'handwriting/K.png',
+        'k': 'handwriting/k_lowercase.png',
+        'L': 'handwriting/L.png',
+        'l': 'handwriting/l_lowercase.png',
+        'M': 'handwriting/M.png',
+        'm': 'handwriting/m_lowercase.png',
+        'N': 'handwriting/N.png',
+        'n': 'handwriting/n_lowercase.png',
+        'O': 'handwriting/O.png',
+        'o': 'handwriting/o_lowercase.png',
+        'P': 'handwriting/P.png',
+        'p': 'handwriting/p_lowercase.png',
+        'Q': 'handwriting/Q.png',
+        'q': 'handwriting/q_lowercase.png',
+        'R': 'handwriting/R.png',
+        'r': 'handwriting/r_lowercase.png',
+        'S': 'handwriting/S.png',
+        's': 'handwriting/s_lowercase.png',
+        'T': 'handwriting/T.png',
+        't': 'handwriting/t_lowercase.png',
+        'U': 'handwriting/U.png',
+        'u': 'handwriting/u_lowercase.png',
+        'V': 'handwriting/V.png',
+        'v': 'handwriting/v_lowercase.png',
+        'W': 'handwriting/W.png',
+        'w': 'handwriting/w_lowercase.png',
+        'X': 'handwriting/X.png',
+        'x': 'handwriting/x_lowercase.png',
+        'Y': 'handwriting/Y.png',
+        'y': 'handwriting/y_lowercase.png',
+        'Z': 'handwriting/Z.png',
+        'z': 'handwriting/z_lowercase.png'
     };
 
     let currentContentType = 'letter';
@@ -1102,16 +1184,26 @@
             if(currentContentType === 'letter'){
                 handwritingSection.style.display = 'block';
                 setHandwritingImage(content);
+            } else {
+                // 非字母模式下隐藏手写体区域
+                handwritingSection.style.display = 'none';
             }
         }
         adjustFontSize();
     }
     function setHandwritingImage(letter){
-        if(handwritingImages[letter]){
-            handwritingImage.src = handwritingImages[letter];
+        // 根据当前字母获取对应的手写体图片URL
+        const imgUrl = handwritingImages[letter];
+        if(imgUrl){
+            handwritingImage.src = imgUrl;
             handwritingImage.style.display = 'block';
+            handwritingImage.onerror = function(){
+                // 如果图片加载失败，隐藏图片区域（可选）
+                handwritingImage.style.display = 'none';
+            };
         } else {
-            handwritingImage.src = '26字母表手写体.jpg';
+            // 没有对应图片时隐藏图片
+            handwritingImage.style.display = 'none';
         }
     }
     function adjustFontSize(){
