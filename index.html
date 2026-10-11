@@ -3332,5 +3332,358 @@
         console.log('✅ 英语认读系统已启动 | 录播发音 + 离线自评');
         console.log('🎯 快捷键: 空格抽取 | S发音 | R认读 | M顺序/随机 | 1 切换板块');
     </script>
+<style>
+/* ============================================================
+   单元选择：二级卡片（替掉原生下拉）
+   原生 <select> 的弹层是系统白底，和主题给的浅色文字糊在一起看不清，
+   所以整行藏掉，换成一个按钮 + 自绘卡片。原生 select 仍在 DOM 里承载逻辑。
+   配色见下方按主题写的显式色值。
+   ============================================================ */
+.pk-hide{display:none !important}
+.pk-btn{
+  display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 15px;
+  border-radius:40px;font-family:inherit;font-size:.9rem;font-weight:700;
+  cursor:pointer;transition:transform .16s,filter .16s,background .16s;
+  max-width:min(70vw,320px);
+}
+.pk-btn:hover{transform:translateY(-1px);filter:brightness(1.03)}
+.pk-btn:active{transform:scale(.97)}
+.pk-btn .pk-cur{opacity:.55;font-size:.76rem;font-weight:600}
+.pk-mask{
+  position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(32,18,52,.5);
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+}
+.pk-mask.show{display:flex;animation:pkFade .22s ease both}
+.pk-mask.closing{animation:pkFadeOut .16s ease both}
+@keyframes pkFade{from{opacity:0}to{opacity:1}}
+@keyframes pkFadeOut{from{opacity:1}to{opacity:0}}
+.pk-card{
+  width:min(540px,100%);max-height:84vh;overflow-y:auto;
+  border-radius:22px;padding:20px;
+  /* 浅色底与字色放这里当默认；深色由 .pk-mask.dark 覆盖（见各工具的 palette） */
+  background:rgba(255,255,255,.96);color:#1f2937;border:1px solid rgba(120,110,190,.22);
+  box-shadow:0 24px 64px rgba(20,10,40,.45);
+  animation:pkUp .28s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes pkUp{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.pk-h{margin:0 0 4px;font-size:1.1rem;font-weight:800}
+.pk-sub{margin:0 0 4px;font-size:.76rem;color:#64748b}
+.pk-sec{font-size:.75rem;font-weight:800;opacity:.65;margin:14px 0 8px;letter-spacing:.5px}
+.pk-chips{display:flex;flex-wrap:wrap;gap:8px}
+.pk-chip{
+  min-height:44px;padding:0 16px;border-radius:40px;cursor:pointer;font-family:inherit;
+  font-size:.87rem;font-weight:700;color:inherit;
+  background:rgba(124,74,158,.09);border:1.5px solid rgba(124,74,158,.22);
+  display:inline-flex;align-items:center;transition:background .16s,transform .16s;
+}
+.pk-chip:hover{background:rgba(124,74,158,.18)}
+.pk-chip:active{transform:scale(.97)}
+.pk-chip.on{background:linear-gradient(135deg,#7c4a9e,#a06bc8);border-color:transparent;color:#fff}
+/* 多选层的工具栏 + "至少选一个"提示 */
+.pk-tools{display:flex;gap:8px;margin-bottom:9px}
+.pk-mini{
+  min-height:36px;padding:0 13px;border-radius:30px;cursor:pointer;font-family:inherit;
+  font-size:.78rem;font-weight:700;background:rgba(124,74,158,.09);
+  border:1.5px solid rgba(124,74,158,.22);color:#5b3b8c;
+}
+.pk-mini:hover{filter:brightness(1.06)}
+.pk-warn{font-size:.78rem;font-weight:700;color:#c0392b;margin-top:8px}
+.pk-mask.dark .pk-warn{color:#ff9f93}
+.pk-act .pk-ok[disabled]{opacity:.42;cursor:not-allowed}
+.pk-act{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.pk-act button{
+  min-height:46px;padding:0 22px;border-radius:40px;cursor:pointer;font-family:inherit;
+  font-size:.9rem;font-weight:800;color:inherit;
+  background:rgba(124,74,158,.10);border:1.5px solid rgba(124,74,158,.24);
+}
+.pk-act button:hover{background:rgba(124,74,158,.18)}
+.pk-act .pk-ok{background:linear-gradient(135deg,#7c4a9e,#a06bc8);border-color:transparent;color:#fff}
+@media (max-width:640px){
+  .pk-card{padding:16px;border-radius:18px;max-height:88vh}
+  .pk-chip{font-size:.83rem;padding:0 13px}
+}
+@media (prefers-reduced-motion: reduce){
+  .pk-mask.show,.pk-mask.closing,.pk-card{animation:none !important}
+}
+
+
+/* 卡片挂在 body 下，用脚本打的 .dark 类，不靠工具的主题选择器 */
+.pk-btn{background:rgba(255,255,255,.8);border:2px solid rgba(120,110,190,.28);color:#1e293b}
+.pk-btn.dark{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.16);color:#e0e8f0}
+.pk-mask.dark .pk-card{background:rgba(16,20,32,.96);color:#e0e8f0;border-color:rgba(255,255,255,.10)}
+.pk-mask.dark .pk-sub{color:#a8b8c8}
+.pk-mask.dark .pk-chip{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14)}
+.pk-mask.dark .pk-chip:hover{background:rgba(255,255,255,.16)}
+.pk-mask.dark .pk-act button{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.16)}
+.pk-mask.dark .pk-card{backdrop-filter:blur(24px) saturate(1.6);-webkit-backdrop-filter:blur(24px) saturate(1.6)}
+
+</style>
+<script>
+/* ====== 单元选择：二级卡片（自动注入）====== */
+(function () {
+  var LVS = [{"sel": "gradeSelect", "sec": "年级", "src": "select"}, {"sel": "bookSelect", "sec": "册别", "src": "select"}, {"sel": "unitSelect", "sec": "单元", "src": "data"}];
+  var ROW = '.selector-row';
+  var LABEL = '选择单元';
+
+    function unitList(v) {
+      if (typeof wordBank === 'undefined') return [];
+      var g = wordBank[v.gradeSelect]; if (!g) return [];
+      var b = g[v.bookSelect]; if (!b) return [];
+      return Object.keys(b).map(function (u) { return { v: u, t: u }; });
+    }
+
+  // 哪一层是多选（没有就是 -1）
+  var MULTI_IDX = -1;
+  for (var _mi = 0; _mi < LVS.length; _mi++) { if (LVS[_mi].multi) { MULTI_IDX = _mi; break; } }
+
+  function boot() {
+    var els = [], rows = [];
+    for (var i = 0; i < LVS.length; i++) {
+      var e = document.getElementById(LVS[i].sel);
+      if (!e) return;                     // 结构对不上就整体不启用，绝不半途插手
+      els.push(e);
+      var r = e.closest(ROW);
+      if (r) { r.classList.add('pk-hide'); rows.push(r); }
+    }
+    var host = rows.length ? rows[0].parentNode : els[0].parentNode;
+
+    // ---- 状态 ----
+    var pick = {};
+    function snapshot() {
+      for (var i = 0; i < LVS.length; i++) {
+        var L = LVS[i];
+        if (L.multi) {
+          var cur = (typeof multiGet === 'function') ? (multiGet() || []) : [];
+          if (!cur.length && els[i].value) cur = [els[i].value];
+          pick[L.sel] = cur.slice();
+        } else {
+          pick[L.sel] = els[i].value;
+        }
+      }
+    }
+
+    // ---- 取某一层的可选项 ----
+    function optionsOf(i) {
+      var L = LVS[i];
+      if (L.src === 'select') {
+        return Array.prototype.map.call(els[i].options, function (o) {
+          return { v: o.value, t: (o.textContent || o.value).trim() };
+        });
+      }
+      try { return unitList(pick) || []; } catch (err) { return []; }
+    }
+
+    // ---- 按钮上的当前选择 ----
+    // live=true 表示读工具的真实状态，而不是卡片里的临时选择
+    function curLabel(live) {
+      var parts = [];
+      for (var i = 0; i < LVS.length; i++) {
+        var L = LVS[i];
+        if (L.multi) {
+          var arr = live ? ((typeof multiGet === 'function') ? (multiGet() || []) : [])
+                         : (pick[L.sel] || []);
+          if (!arr.length && els[i].value) arr = [els[i].value];   // 工具里还没记就按它当前值兜一个
+          parts.push(arr.length ? arr.map(function (v) { return String(v).toUpperCase(); }).join('、') : '未选');
+          continue;
+        }
+        var val = live ? els[i].value : pick[L.sel];
+        var opts = optionsOf(i), hit = null;
+        for (var j = 0; j < opts.length; j++) if (opts[j].v === val) { hit = opts[j]; break; }
+        parts.push(hit ? hit.t : val);
+      }
+      return parts.join(' · ');
+    }
+
+    // ---- 建 UI ----
+    var wrap = document.createElement('div');
+    wrap.className = 'pk-btn-wrap';
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pk-btn';
+    btn.id = 'pickUnitBtn';
+    var lab = document.createElement('span');
+    lab.id = 'pickUnitLabel';
+    var arrow = document.createElement('span');
+    arrow.className = 'pk-cur';
+    arrow.textContent = '▾';
+    var ico = document.createElement('span');
+    ico.textContent = '📚';
+    btn.appendChild(ico); btn.appendChild(lab); btn.appendChild(arrow);
+    wrap.appendChild(btn);
+    host.insertBefore(wrap, rows.length ? rows[0] : els[0]);
+
+    var mask = document.createElement('div');
+    mask.className = 'pk-mask';
+    mask.id = 'unitPicker';
+    mask.innerHTML =
+      '<div class="pk-card" role="dialog" aria-modal="true" aria-label="' + LABEL + '">' +
+        '<h3 class="pk-h">📚 ' + LABEL + '</h3>' +
+        '<p class="pk-sub">选好后点「确定」，马上切过去。</p>' +
+        '<div id="pkBody"></div>' +
+        '<div class="pk-act">' +
+          '<button type="button" id="pkCancel">取消</button>' +
+          '<button type="button" class="pk-ok" id="pkOk">确定</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(mask);
+    var body = mask.querySelector('#pkBody');
+
+    function chip(text, on, fn) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'pk-chip' + (on ? ' on' : '');
+      b.textContent = text;
+      b.addEventListener('click', fn);
+      return b;
+    }
+    function draw() {
+      body.innerHTML = '';
+      for (var i = 0; i < LVS.length; i++) {
+        (function (idx) {
+          var L = LVS[idx];
+          var sec = document.createElement('div');
+          sec.className = 'pk-sec';
+          sec.textContent = L.sec + (L.multi ? '（' + '可多选' + '）' : '');
+          body.appendChild(sec);
+          var opts = optionsOf(idx);
+          var isMulti = !!L.multi;
+          if (isMulti && opts.length) {
+            var tools = document.createElement('div');
+            tools.className = 'pk-tools';
+            var btnAll = document.createElement('button');
+            btnAll.type = 'button'; btnAll.className = 'pk-mini'; btnAll.textContent = '本册全选';
+            btnAll.addEventListener('click', function () {
+              pick[L.sel] = opts.map(function (o) { return o.v; }); draw();
+            });
+            var btnNone = document.createElement('button');
+            btnNone.type = 'button'; btnNone.className = 'pk-mini'; btnNone.textContent = '清空';
+            btnNone.addEventListener('click', function () { pick[L.sel] = []; draw(); });
+            tools.appendChild(btnAll); tools.appendChild(btnNone);
+            body.appendChild(tools);
+          }
+          var box = document.createElement('div');
+          box.className = 'pk-chips';
+          if (!opts.length) {
+            var em = document.createElement('div');
+            em.className = 'pk-sub';
+            em.textContent = '这一级还没有数据';
+            box.appendChild(em);
+          }
+          opts.forEach(function (o) {
+            var on = isMulti ? (pick[L.sel] || []).indexOf(o.v) >= 0 : pick[L.sel] === o.v;
+            box.appendChild(chip(o.t, on, function () {
+              if (isMulti) {
+                var arr = (pick[L.sel] || []).slice();
+                var k0 = arr.indexOf(o.v);
+                if (k0 >= 0) arr.splice(k0, 1); else arr.push(o.v);
+                pick[L.sel] = arr;
+              } else {
+                pick[L.sel] = o.v;
+                for (var k = idx + 1; k < LVS.length; k++) {
+                  var Lk = LVS[k];
+                  if (Lk.multi) {                        // 换了册就给个合理默认：新册的第一个单元
+                    var ok2 = optionsOf(k);
+                    pick[Lk.sel] = ok2.length ? [ok2[0].v] : [];
+                  } else {
+                    pick[Lk.sel] = null;
+                  }
+                }
+              }
+              draw();
+            }));
+          });
+          body.appendChild(box);
+          if (isMulti && !(pick[L.sel] || []).length) {
+            var w = document.createElement('div');
+            w.className = 'pk-warn';
+            w.textContent = '至少选一个单元';
+            body.appendChild(w);
+          }
+        })(i);
+      }
+      // 多选层一个都没选 → 不让确定
+      var ok = mask.querySelector('#pkOk');
+      var bad = MULTI_IDX >= 0 && !(pick[LVS[MULTI_IDX].sel] || []).length;
+      ok.disabled = bad;
+      ok.style.opacity = bad ? '.45' : '';
+      ok.style.cursor = bad ? 'not-allowed' : '';
+    }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    function open() {
+      snapshot(); paintTheme(); draw();
+      mask.classList.remove('closing');
+      mask.classList.add('show');
+      document.addEventListener('keydown', onKey);
+      setTimeout(function () { var b = mask.querySelector('#pkOk'); if (b) b.focus(); }, 40);
+    }
+    function close() {
+      document.removeEventListener('keydown', onKey);
+      if (!mask.classList.contains('show')) return;
+      mask.classList.add('closing');
+      setTimeout(function () {
+        mask.classList.remove('show'); mask.classList.remove('closing');
+        syncLabel();
+      }, 160);
+    }
+    function apply() {
+      // 多选：交给工具自己的钩子（只有它知道怎么把"多个单元"写回内部状态）
+      if (MULTI_IDX >= 0 && typeof multiSet === 'function') {
+        var g = pick[LVS[0].sel];
+        var us = pick[LVS[MULTI_IDX].sel] || [];
+        if (g != null && us.length) { multiSet(g, us); syncLabel(); close(); return; }
+      }
+      // 单选：按层级顺序赋值 + 派发 change：工具自己的更新与存档逻辑原封不动跑一遍
+      for (var i = 0; i < LVS.length; i++) {
+        var L = LVS[i];
+        if (pick[L.sel] == null) continue;
+        if (els[i].value !== pick[L.sel]) {
+          els[i].value = pick[L.sel];
+          els[i].dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
+      close();
+    }
+    function syncLabel() {
+      var t = curLabel(true);
+      lab.textContent = t;
+      btn.title = LABEL + '：' + t;
+    }
+
+    // ---- 深色模式 ----
+    // 遮罩挂在 body 下，而消消乐的深色是加在 #app 上的 data-theme，
+    // 认读系统是加在 body 的 .night —— 用选择器去猜嵌套关系很脆，
+    // 所以由脚本自己判断、给按钮和卡片打类。
+    function isDark() { try { return !!(document.body.classList.contains('night')); } catch (e) { return false; } }
+    function paintTheme() {
+      var d = isDark();
+      mask.classList.toggle('dark', d);
+      btn.classList.toggle('dark', d);
+    }
+    try {
+      var tgt = (document.body);
+      if (tgt && window.MutationObserver) {
+        new MutationObserver(paintTheme).observe(tgt, { attributes: true, attributeFilter: ["class"] });
+      }
+    } catch (e) {}
+
+    btn.addEventListener('click', open);
+    mask.querySelector('#pkOk').addEventListener('click', apply);
+    mask.querySelector('#pkCancel').addEventListener('click', close);
+    mask.addEventListener('click', function (e) { if (e.target === mask) close(); });
+    for (var i = 0; i < els.length; i++) els[i].addEventListener('change', syncLabel);
+    paintTheme();
+    syncLabel();
+  }
+
+  if (document.readyState === 'loading') {
+    // 排在工具自己的 DOMContentLoaded 之后跑，确保它已经初始化完
+    document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 0); });
+  } else {
+    setTimeout(boot, 0);
+  }
+})();
+
+</script>
 </body>
 </html>
