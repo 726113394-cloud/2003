@@ -1167,65 +1167,126 @@
         //     册仍然写 upper（四年级上册）。
         // ================================================================
         const JIELI_BANK = {
+            "接力三上": {
+                upper: {
+                    "Unit 1": [
+                        { word: "hello", chinese: "你好", isBold: true }, { word: "hi", chinese: "你好", isBold: true }, { word: "I", chinese: "我", isBold: true },
+                        { word: "am", chinese: "是", isBold: true }, { word: "yes", chinese: "是；是的", isBold: true }, { word: "no", chinese: "不；不是", isBold: true },
+                        { word: "good", chinese: "好的", isBold: true }, { word: "morning", chinese: "早晨；上午", isBold: true }, { word: "dad", chinese: "爸爸", isBold: true },
+                        { word: "goodbye", chinese: "再见", isBold: true }, { word: "mom", chinese: "妈妈", isBold: true }, { word: "Miss", chinese: "小姐；女士", isBold: true },
+                        { word: "bye", chinese: "再见", isBold: true }
+                    ],
+                    "Unit 2": [
+                        { word: "a", chinese: "一；一个", isBold: true }, { word: "teacher", chinese: "教师；老师", isBold: true }, { word: "student", chinese: "学生", isBold: true },
+                        { word: "stand", chinese: "站立", isBold: true }, { word: "up", chinese: "向上", isBold: true }, { word: "sit", chinese: "坐", isBold: true },
+                        { word: "down", chinese: "向下", isBold: true }, { word: "please", chinese: "请", isBold: true }, { word: "and", chinese: "和", isBold: true },
+                        { word: "go", chinese: "去；走", isBold: true }, { word: "stop", chinese: "停止", isBold: true }, { word: "are", chinese: "是", isBold: true },
+                        { word: "you", chinese: "你；你们", isBold: true }, { word: "girl", chinese: "女孩", isBold: true }, { word: "boy", chinese: "男孩", isBold: true }
+                    ],
+                    "Unit 3": [
+                        { word: "this", chinese: "这；这个", isBold: true }, { word: "is", chinese: "是", isBold: true }, { word: "box", chinese: "盒；箱", isBold: true },
+                        { word: "ball", chinese: "球", isBold: true }, { word: "bag", chinese: "包；袋", isBold: true }, { word: "cat", chinese: "猫", isBold: true },
+                        { word: "book", chinese: "书", isBold: true }, { word: "an", chinese: "一；一个", isBold: true }, { word: "apple", chinese: "苹果", isBold: true },
+                        { word: "it", chinese: "它", isBold: true }, { word: "ruler", chinese: "尺子", isBold: true }, { word: "pencil", chinese: "铅笔", isBold: true },
+                        { word: "pen", chinese: "钢笔", isBold: true }, { word: "tree", chinese: "树", isBold: true }
+                    ],
+                    "Unit 4": [
+                        { word: "what", chinese: "什么", isBold: true }, { word: "car", chinese: "小汽车", isBold: true }, { word: "taxi", chinese: "出租车", isBold: true },
+                        { word: "train", chinese: "火车", isBold: true }, { word: "bus", chinese: "公共汽车", isBold: true }, { word: "dog", chinese: "狗", isBold: true },
+                        { word: "door", chinese: "门", isBold: true }, { word: "chair", chinese: "椅子", isBold: true }, { word: "banana", chinese: "香蕉", isBold: true },
+                        { word: "orange", chinese: "橙子；橙红色的", isBold: true }, { word: "green", chinese: "绿色的", isBold: true }, { word: "blue", chinese: "蓝色的", isBold: true },
+                        { word: "black", chinese: "黑色的", isBold: true }, { word: "white", chinese: "白色的", isBold: true }, { word: "panda", chinese: "大熊猫", isBold: true },
+                        { word: "show", chinese: "展示", isBold: true }, { word: "me", chinese: "我", isBold: true }, { word: "have", chinese: "有", isBold: true },
+                        { word: "two", chinese: "二", isBold: true }, { word: "three", chinese: "三", isBold: true }, { word: "one", chinese: "一", isBold: true },
+                        { word: "four", chinese: "四", isBold: true }, { word: "five", chinese: "五", isBold: true }, { word: "six", chinese: "六", isBold: true }
+                    ],
+                    "Unit 5": [
+                        { word: "color", chinese: "颜色", isBold: true }, { word: "yellow", chinese: "黄色的", isBold: true }, { word: "red", chinese: "红色的", isBold: true },
+                        { word: "she", chinese: "她", isBold: true }, { word: "he", chinese: "他", isBold: true }, { word: "who", chinese: "谁", isBold: true },
+                        { word: "Mr.", chinese: "先生", isBold: true }, { word: "Ms.", chinese: "女士", isBold: true }, { word: "worker", chinese: "工人", isBold: true }
+                    ],
+                    "Unit 6": [
+                        { word: "that", chinese: "那；那个", isBold: true }, { word: "come", chinese: "来", isBold: true }, { word: "here", chinese: "在这里", isBold: true },
+                        { word: "not", chinese: "不", isBold: true }, { word: "how", chinese: "怎样；如何", isBold: true }, { word: "old", chinese: "岁；年纪", isBold: true },
+                        { word: "nine", chinese: "九", isBold: true }, { word: "ten", chinese: "十", isBold: true }, { word: "seven", chinese: "七", isBold: true },
+                        { word: "eight", chinese: "八", isBold: true }, { word: "happy", chinese: "快乐的", isBold: true }, { word: "birthday", chinese: "生日", isBold: true },
+                        { word: "to", chinese: "给；向", isBold: true }, { word: "thank", chinese: "谢谢", isBold: true }, { word: "card", chinese: "卡片", isBold: true }
+                    ],
+                    "Unit 7": [
+                        { word: "new", chinese: "新的", isBold: true }, { word: "year", chinese: "年", isBold: true }, { word: "for", chinese: "给；对", isBold: true },
+                        { word: "dear", chinese: "亲爱的", isBold: true }, { word: "yours", chinese: "你的；你们的", isBold: false }, { word: "some", chinese: "一些", isBold: true },
+                        { word: "water", chinese: "水", isBold: true }, { word: "hungry", chinese: "饥饿的", isBold: true }, { word: "bread", chinese: "面包", isBold: true },
+                        { word: "OK", chinese: "好；行", isBold: true }, { word: "do", chinese: "（助动词）", isBold: true }, { word: "like", chinese: "喜欢", isBold: true },
+                        { word: "juice", chinese: "果汁", isBold: true }, { word: "fish", chinese: "鱼肉", isBold: true }
+                    ],
+                    "Unit 8": [
+                        { word: "driver", chinese: "司机", isBold: true }, { word: "farmer", chinese: "农民", isBold: true }, { word: "doctor", chinese: "医生", isBold: true },
+                        { word: "nurse", chinese: "护士", isBold: true }
+                    ],
+                    "词组": [
+                        { word: "stand up", chinese: "起立", isBold: true }, { word: "sit down", chinese: "坐下", isBold: true }, { word: "come here", chinese: "过来", isBold: true }
+                    ],
+                },
+            },
             "接力四上": {
                 upper: {
                     "Unit 1": [
-                        { word: "these", chinese: "这些", isBold: true },{ word: "wash", chinese: "洗", isBold: true },{ word: "brush", chinese: "（用刷子）刷净", isBold: false },
-                        { word: "wave", chinese: "挥动；挥舞", isBold: false },{ word: "body", chinese: "身体", isBold: true },{ word: "shake", chinese: "摇动；抖动", isBold: false },
-                        { word: "feet", chinese: "脚（foot 的复数形式）", isBold: false },{ word: "with", chinese: "用", isBold: true },{ word: "eat", chinese: "吃", isBold: true },
-                        { word: "listen", chinese: "听", isBold: true },{ word: "write", chinese: "写", isBold: true },{ word: "they", chinese: "他们；她们；它们", isBold: true },
-                        { word: "clock", chinese: "时钟", isBold: true },{ word: "blackboard", chinese: "黑板", isBold: true },{ word: "out", chinese: "（从……里）出来", isBold: true },
+                        { word: "these", chinese: "这些", isBold: true }, { word: "wash", chinese: "洗", isBold: true }, { word: "brush", chinese: "（用刷子）刷净", isBold: false },
+                        { word: "wave", chinese: "挥动；挥舞", isBold: false }, { word: "body", chinese: "身体", isBold: true }, { word: "shake", chinese: "摇动；抖动", isBold: false },
+                        { word: "feet", chinese: "脚（foot 的复数形式）", isBold: false }, { word: "with", chinese: "用", isBold: true }, { word: "eat", chinese: "吃", isBold: true },
+                        { word: "listen", chinese: "听", isBold: true }, { word: "write", chinese: "写", isBold: true }, { word: "they", chinese: "他们；她们；它们", isBold: true },
+                        { word: "clock", chinese: "时钟", isBold: true }, { word: "blackboard", chinese: "黑板", isBold: true }, { word: "out", chinese: "（从……里）出来", isBold: true },
                         { word: "say", chinese: "说", isBold: true }
                     ],
                     "Unit 2": [
-                        { word: "behind", chinese: "在……后面", isBold: true },{ word: "schoolbag", chinese: "书包", isBold: true },{ word: "cup", chinese: "杯子", isBold: true },
-                        { word: "move", chinese: "移动", isBold: true },{ word: "excuse", chinese: "原谅", isBold: false },{ word: "park", chinese: "公园", isBold: true },
-                        { word: "along", chinese: "沿着", isBold: false },{ word: "street", chinese: "街道", isBold: true },{ word: "turn", chinese: "转向", isBold: true },
-                        { word: "school", chinese: "学校", isBold: true },{ word: "zoo", chinese: "动物园", isBold: true },{ word: "hospital", chinese: "医院", isBold: true },
+                        { word: "behind", chinese: "在……后面", isBold: true }, { word: "schoolbag", chinese: "书包", isBold: true }, { word: "cup", chinese: "杯子", isBold: true },
+                        { word: "move", chinese: "移动", isBold: true }, { word: "excuse", chinese: "原谅", isBold: false }, { word: "park", chinese: "公园", isBold: true },
+                        { word: "along", chinese: "沿着", isBold: false }, { word: "street", chinese: "街道", isBold: true }, { word: "turn", chinese: "转向", isBold: true },
+                        { word: "school", chinese: "学校", isBold: true }, { word: "zoo", chinese: "动物园", isBold: true }, { word: "hospital", chinese: "医院", isBold: true },
                         { word: "round", chinese: "转过来；调转方向", isBold: false }
                     ],
                     "Unit 3": [
-                        { word: "sky", chinese: "天空", isBold: false },{ word: "plane", chinese: "飞机", isBold: true }
+                        { word: "sky", chinese: "天空", isBold: false }, { word: "plane", chinese: "飞机", isBold: true }
                     ],
                     "Unit 4": [
-                        { word: "weather", chinese: "天气", isBold: true },{ word: "windy", chinese: "多风的", isBold: true },{ word: "sunny", chinese: "晴朗的", isBold: true },
-                        { word: "cool", chinese: "凉爽的", isBold: true },{ word: "cloudy", chinese: "多云的", isBold: true },{ word: "rainy", chinese: "下雨的", isBold: false },
-                        { word: "warm", chinese: "暖和的", isBold: true },{ word: "wear", chinese: "穿", isBold: true },{ word: "shirt", chinese: "衬衫", isBold: true },
-                        { word: "spring", chinese: "春天，春季", isBold: true },{ word: "summer", chinese: "夏天，夏季", isBold: true },{ word: "autumn", chinese: "秋天，秋季", isBold: true },
-                        { word: "winter", chinese: "冬天，冬季", isBold: true },{ word: "which", chinese: "哪一个", isBold: true },{ word: "season", chinese: "季节", isBold: true },
+                        { word: "weather", chinese: "天气", isBold: true }, { word: "windy", chinese: "多风的", isBold: true }, { word: "sunny", chinese: "晴朗的", isBold: true },
+                        { word: "cool", chinese: "凉爽的", isBold: true }, { word: "cloudy", chinese: "多云的", isBold: true }, { word: "rainy", chinese: "下雨的", isBold: false },
+                        { word: "warm", chinese: "暖和的", isBold: true }, { word: "wear", chinese: "穿", isBold: true }, { word: "shirt", chinese: "衬衫", isBold: true },
+                        { word: "spring", chinese: "春天，春季", isBold: true }, { word: "summer", chinese: "夏天，夏季", isBold: true }, { word: "autumn", chinese: "秋天，秋季", isBold: true },
+                        { word: "winter", chinese: "冬天，冬季", isBold: true }, { word: "which", chinese: "哪一个", isBold: true }, { word: "season", chinese: "季节", isBold: true },
                         { word: "best", chinese: "最", isBold: true }
                     ],
                     "Unit 5": [
-                        { word: "family", chinese: "家，家庭", isBold: true },{ word: "father", chinese: "父亲", isBold: true },{ word: "Mrs.", chinese: "太太，夫人", isBold: true },
-                        { word: "sister", chinese: "姐姐，妹妹", isBold: true },{ word: "brother", chinese: "哥哥，弟弟", isBold: true },{ word: "his", chinese: "他的", isBold: true },
-                        { word: "cleaner", chinese: "清洁工", isBold: false },{ word: "dancer", chinese: "舞蹈家", isBold: false },{ word: "singer", chinese: "歌唱家，歌手", isBold: false }
+                        { word: "family", chinese: "家，家庭", isBold: true }, { word: "father", chinese: "父亲", isBold: true }, { word: "Mrs.", chinese: "太太，夫人", isBold: true },
+                        { word: "sister", chinese: "姐姐，妹妹", isBold: true }, { word: "brother", chinese: "哥哥，弟弟", isBold: true }, { word: "his", chinese: "他的", isBold: true },
+                        { word: "cleaner", chinese: "清洁工", isBold: false }, { word: "dancer", chinese: "舞蹈家", isBold: false }, { word: "singer", chinese: "歌唱家，歌手", isBold: false }
                     ],
                     "Unit 6": [
-                        { word: "light", chinese: "浅色的", isBold: true },{ word: "clean", chinese: "干净的", isBold: true },{ word: "boat", chinese: "小船", isBold: true },
-                        { word: "grass", chinese: "草", isBold: true },{ word: "skirt", chinese: "短裙", isBold: true },{ word: "milk", chinese: "牛奶", isBold: true },
-                        { word: "beef", chinese: "牛肉", isBold: false },{ word: "chicken", chinese: "鸡肉", isBold: true },{ word: "thirsty", chinese: "渴的", isBold: false }
+                        { word: "light", chinese: "浅色的", isBold: true }, { word: "clean", chinese: "干净的", isBold: true }, { word: "boat", chinese: "小船", isBold: true },
+                        { word: "grass", chinese: "草", isBold: true }, { word: "skirt", chinese: "短裙", isBold: true }, { word: "milk", chinese: "牛奶", isBold: true },
+                        { word: "beef", chinese: "牛肉", isBold: false }, { word: "chicken", chinese: "鸡肉", isBold: true }, { word: "thirsty", chinese: "渴的", isBold: false }
                     ],
                     "Unit 7": [
-                        { word: "eleven", chinese: "十一", isBold: true },{ word: "twelve", chinese: "十二", isBold: true },{ word: "thirteen", chinese: "十三", isBold: true },
-                        { word: "fourteen", chinese: "十四", isBold: true },{ word: "fifteen", chinese: "十五", isBold: true },{ word: "sixteen", chinese: "十六", isBold: true },
-                        { word: "seventeen", chinese: "十七", isBold: true },{ word: "eighteen", chinese: "十八", isBold: true },{ word: "nineteen", chinese: "十九", isBold: true },
-                        { word: "twenty", chinese: "二十", isBold: true },{ word: "balloon", chinese: "气球", isBold: false },{ word: "win", chinese: "赢，获胜", isBold: true },
-                        { word: "many", chinese: "许多", isBold: true },{ word: "our", chinese: "我们的", isBold: true },{ word: "thirty", chinese: "三十", isBold: true },
-                        { word: "study", chinese: "学习", isBold: true },{ word: "fork", chinese: "叉子", isBold: false },{ word: "spoon", chinese: "勺，匙，调羹", isBold: false },
-                        { word: "pear", chinese: "梨", isBold: false },{ word: "grape", chinese: "葡萄", isBold: true },{ word: "tomato", chinese: "西红柿", isBold: true }
+                        { word: "eleven", chinese: "十一", isBold: true }, { word: "twelve", chinese: "十二", isBold: true }, { word: "thirteen", chinese: "十三", isBold: true },
+                        { word: "fourteen", chinese: "十四", isBold: true }, { word: "fifteen", chinese: "十五", isBold: true }, { word: "sixteen", chinese: "十六", isBold: true },
+                        { word: "seventeen", chinese: "十七", isBold: true }, { word: "eighteen", chinese: "十八", isBold: true }, { word: "nineteen", chinese: "十九", isBold: true },
+                        { word: "twenty", chinese: "二十", isBold: true }, { word: "balloon", chinese: "气球", isBold: false }, { word: "win", chinese: "赢，获胜", isBold: true },
+                        { word: "many", chinese: "许多", isBold: true }, { word: "our", chinese: "我们的", isBold: true }, { word: "thirty", chinese: "三十", isBold: true },
+                        { word: "study", chinese: "学习", isBold: true }, { word: "fork", chinese: "叉子", isBold: false }, { word: "spoon", chinese: "勺，匙，调羹", isBold: false },
+                        { word: "pear", chinese: "梨", isBold: false }, { word: "grape", chinese: "葡萄", isBold: true }, { word: "tomato", chinese: "西红柿", isBold: true }
                     ],
                     "Unit 8": [
-                        { word: "animal", chinese: "动物", isBold: true },{ word: "those", chinese: "那些", isBold: true },{ word: "duck", chinese: "鸭子", isBold: true },
+                        { word: "animal", chinese: "动物", isBold: true }, { word: "those", chinese: "那些", isBold: true }, { word: "duck", chinese: "鸭子", isBold: true },
                         { word: "tiger", chinese: "老虎", isBold: true }
                     ],
-                    "附 · 词组": [
-                        { word: "nature park", chinese: "自然公园", isBold: false },{ word: "go out", chinese: "出去", isBold: false },{ word: "come in", chinese: "进来", isBold: false },
-                        { word: "put up", chinese: "举起来", isBold: false },{ word: "turn right", chinese: "向右转", isBold: false },{ word: "turn left", chinese: "向左转", isBold: false },
+                    "词组": [
+                        { word: "nature park", chinese: "自然公园", isBold: false }, { word: "go out", chinese: "出去", isBold: false }, { word: "come in", chinese: "进来", isBold: false },
+                        { word: "put up", chinese: "举起来", isBold: false }, { word: "turn right", chinese: "向右转", isBold: false }, { word: "turn left", chinese: "向左转", isBold: false },
                         { word: "make new friends", chinese: "结交新朋友", isBold: false }
                     ],
                 },
             },
-        };
+};
 
         const PUBLISHERS = [{ id: 'pep', name: '人教版' }, { id: 'jieli', name: '接力版' }];
         const LS_PUBLISHER = 'reading.publisher';       // ⚠️ 键名带工具前缀
